@@ -1,4 +1,4 @@
-# Manage HPCC Jenkins Builds with Openstack and Ansible 
+# Manage Jenkins Builds with Openstack/Ansible
 Launch HPCC build systems and provision with Ansible on OpenStack
 
 ## Introduction 
