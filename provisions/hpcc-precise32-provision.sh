@@ -86,7 +86,7 @@ fi
 # Install pre-requisite packages 
 #-------------------------------
 apt-get update
-apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev
+apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev fop zip 
 curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get install -y nodejs
 

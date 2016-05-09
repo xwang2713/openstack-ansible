@@ -6,7 +6,7 @@ yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-deve
 yum install -y hiredis-devel numactl-devel mysql-devel libevent-devel
 yum install -y python-devel apr1-devel aprutil-devel
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
-yum install -y rpm-build curl-devel gtk2-devel v8-devel
+yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
 

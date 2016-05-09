@@ -105,7 +105,7 @@ yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-deve
 yum install -y hiredis-devel numactl-devel libevent-devel
 yum install -y python-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel 
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel v8-devel
-yum install -y git rpm-build curl-devel gtk2-devel
+yum install -y git rpm-build curl-devel gtk2-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
 yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm

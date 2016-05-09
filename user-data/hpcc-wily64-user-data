@@ -10,7 +10,7 @@ apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libl
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
 apt-get install -y python2.7-dev libv8-dev openjdk-6-jdk openjdk-7-jdk libapr1-dev libaprutil1-dev libiberty-dev
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
-apt-get install -y libsqlite3-dev libmemcached-dev
+apt-get install -y libsqlite3-dev libmemcached-dev libfreetype6-dev pkg-config fop zip
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 
 # Install R

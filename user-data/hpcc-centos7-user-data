@@ -12,7 +12,7 @@ curl --silent --location https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
 yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm
 # Additional packages for GraphControl
-yum install -y gtk2-devel
+yum install -y gtk2-devel freetype-devel
 wget http://1.0.0.17/data3/software/antlr/ANTLR.tar.gz
 tar -zxvf ANTLR.tar.gz -C /usr/local/
 rm -rf ANTLR.tar.gz
