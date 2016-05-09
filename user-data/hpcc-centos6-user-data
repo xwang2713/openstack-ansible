@@ -1,0 +1,53 @@
+#!/bin/bash
+
+yum install -y epel-release wget
+yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel
+yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
+yum install -y hiredis-devel numactl-devel mysql-devel libevent-devel
+yum install -y python-devel apr1-devel aprutil-devel
+yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
+yum install -y rpm-build curl-devel gtk2-devel v8-devel
+curl --silent --location https://rpm.nodesource.com/setup | bash -
+yum install -y nodejs
+
+yum install -y java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
+# Recent Jenkins requires Java 1.7 or later
+update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+
+# Need update git. The dfault one is not compatible with recent Jenkine git plugin
+wget http://1.0.0.17/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm
+wget http://1.0.0.17/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm 
+wget http://1.0.0.17/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
+yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
+rm -rf *.rpm
+
+yum install -y R-core-devel
+wget http://1.0.0.17/data3/software/R/Rcpp_0.12.1.tar.gz
+R CMD INSTALL Rcpp_0.12.1.tar.gz
+wget http://1.0.0.17/data3/software/R/RInside_0.2.12.tar.gz
+R CMD INSTALL RInside_0.2.12.tar.gz
+rm -rf *.tar.gz
+
+wget http://1.0.0.17/data3/software/antlr/ANTLR.tar.gz
+tar -zxvf ANTLR.tar.gz -C /usr/local/
+wget http://1.0.0.17/data3/software/graphviz/graphviz-2.26.3.tar.gz 
+tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
+rm -rf *.tar.gz
+
+mkdir -p /jenkins/workspace
+chown -R centos:centos /jenkins
+
+expected_version=3.5.2
+wget http://1.0.0.17/data3/software/cmake/cmake-${expected_version}-el6-x86_64.tar.gz 
+tar -zxf cmake-${expected_version}-el6-x86_64.tar.gz
+rm -rf  cmake-${expected_version}-el6-x86_64.tar.gz
+cd  cmake-${expected_version}-Linux-x86_64
+cp -r * /usr/local/
+cd
+rm -rf *.tar.gz
+
+wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+yum install -y devtoolset-2-gcc devtoolset-2-binutils
+yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui

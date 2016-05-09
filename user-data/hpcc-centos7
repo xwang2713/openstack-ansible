@@ -1,0 +1,36 @@
+#!/bin/bash
+nstall -y python
+yum install -y epel-release wget
+yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel
+yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
+yum install -y hiredis-devel numactl-devel libevent-devel
+yum install -y python-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel
+yum install -y sqlite-devel,libmemcached-devel,memcached-devel tbb-devel
+yum install -y git rpm-build curl-devel 
+curl --silent --location https://rpm.nodesource.com/setup | bash -
+yum install -y nodejs
+yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm
+
+yum install -y R-core-devel
+wget http://1.0.0.17/data3/software/R/Rcpp_0.12.1.tar.gz
+R CMD INSTALL Rcpp_0.12.1.tar.gz
+wget http://1.0.0.17/data3/software/R/RInside_0.2.12.tar.gz
+R CMD INSTALL RInside_0.2.12.tar.gz
+
+wget http://1.0.0.17/data3/software/cmake/cmake-3.5.2-el7-x86_64.tar.gz
+tar -zxf cmake-3.5.2-el7-x86_64.tar.gz
+rm -rf  cmake-3.5.2-el7-x86_64.tar.gz
+cd  cmake-3.5.2-Linux-x86_64
+cp -r * /usr/local/
+
+# Additional packages for GraphControl
+yum install -y gtk2-devel
+wget http://1.0.0.17/data3/software/antlr/ANTLR.tar.gz 
+tar -zxvf ANTLR.tar.gz -C /usr/local/
+rm -rf ANTLR.tar.gz
+wget http://1.0.0.17/data3/software/graphviz/graphviz-2.26.3.tar.gz .
+tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
+rm -rf graphviz-2.26.3.tar.gz
+
+mkdir -p /jenkins/workspace
+chown -R centos:centos /jenkins

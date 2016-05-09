@@ -1,0 +1,2 @@
+provision_script: hpcc-centos7-provision.sh
+user: centos

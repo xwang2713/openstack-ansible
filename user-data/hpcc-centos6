@@ -1,0 +1,4 @@
+#!/bin/bash
+yum install -y python
+#yum install -y python-pip
+#pip install simplejson

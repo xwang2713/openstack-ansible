@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /mnt/disk1/work/openstack/jenkins
+pwd
+
+./delete-servers.sh -i data/server.list

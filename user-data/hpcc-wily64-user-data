@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Install pre-requisite packages
+#-------------------------------
+apt-get update
+apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+apt-get install -y nodejs
+apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
+apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
+apt-get install -y python2.7-dev libv8-dev openjdk-6-jdk openjdk-7-jdk libapr1-dev libaprutil1-dev libiberty-dev
+apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
+apt-get install -y libsqlite3-dev libmemcached-dev
+apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
+
+# Install R
+#-------------------------------
+apt-get install -y r-base r-cran-rcpp
+wget http://1.0.0.17/data3/software/R/RInside_0.2.12.tar.gz 
+R CMD INSTALL RInside_0.2.12.tar.gz
+rm -rf *.tar.gz
+
+# Add ANTLRA and graphviz
+#-----------------------------------------
+wget http://1.0.0.17/data3/software/antlr/ANTLR.tar.gz
+tar -zxvf ANTLR.tar.gz -C /usr/local/
+wget http://1.0.0.17/data3/software/graphviz/graphviz-2.26.3.tar.gz
+tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
+rm -rf *.tar.gz
+
+# Configure Jenkins slaves
+#-------------------------------
+mkdir -p /jenkins/workspace
+chown -R ubuntu:ubuntu jenkins
+
+# Install cmake
+#------------------------------
+expected_version=3.5.2
+wget http://1.0.0.17/data3/software/cmake/cmake-3.5.2-wily-amd64.tar.gz
+tar -zxf cmake-3.5.2-wily-amd64.tar.gz
+rm -rf  cmake-3.5.2-wily-amd64.tar.gz
+cd  cmake-3.5.2-Linux-x86_64
+cp -r * /usr/local/
+rm -rf *.tar.gz
+cd ..
+

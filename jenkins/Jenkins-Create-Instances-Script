@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# source environment or set OPENSTACK_ANSIBLE_HOME variable
+# source <path of environment file>
+
+# All expected system should be defined in Jenkins slave nodes. Set "host" field to expected hostname.  For example,
+# "hpcc-centos7 21" is "hpccsystems-dev-el7=build21". "hpcc-trusty64" is 
+# "hpccsystmes-dev-trusty64-build21".
+# line started with '#' will be skipped
+(cat <<EOF
+hpcc-centos5 21
+#hpcc-centos5 22
+#hpcc-centos5 23
+hpcc-centos6 21
+#hpcc-centos6 22
+#hpcc-centos6 23
+hpcc-centos7 21
+#hpcc-centos7 22
+#hpcc-centos7 23
+hpcc-xenial64 21
+#hpcc-xenial64 22
+#hpcc-xenial64 23
+hpcc-wily64 21
+#hpcc-wily64 22
+hpcc-trusty64 21
+#hpcc-trusty64 22
+#hpcc-trusty64 23
+hpcc-trusty32 21
+hpcc-precise64 21
+#hpcc-precise64 22
+hpcc-precise64cpp11 21
+#hpcc-precise64cpp11 22
+hpcc-precise32 21
+EOF
+) > /mnt/disk1/work/openstack/jenkins/data/server.list
+
+cd /mnt/disk1/work/openstack/jenkins
+./create-servers.sh -i data/server.list
+
+sleep 60 # give some time for systems fully up (sshd)
+cd ../provisions
+time ansible-playbook provision_1.yaml --extra-vars "hosts=new" -b -i /etc/ansible/jenkins_slaves
+
+cd ../jenkins 
+ansible-playbook update-hosts.yaml -b  -i /etc/ansible/jenkins
