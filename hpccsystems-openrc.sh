@@ -13,7 +13,7 @@ export OS_AUTH_URL=http://10.173.242.101:5000/v2.0
 # With the addition of Keystone we have standardized on the term **tenant**
 # as the entity that owns the resources.
 export OS_TENANT_ID=f735892bc9f44a73b8a971353050df55
-export OS_TENANT_NAME="hpccsystems"
+export OS_TENANT_NAME="hpcc-platform"
 
 # In addition to the owning entity (tenant), openstack stores the entity
 # performing the action as the **user**.

@@ -143,6 +143,8 @@ then
     echo "Faild to create new instance $server_name"
     exit 1
 fi
+
+sleep 2
 server_info=$(openstack server list | grep ${server_name}) 
 server_id=$(echo $server_info | cut -d'|' -f 2 | sed 's/ //g')   
 server_ip=$(echo $server_info | cut -d'|' -f 5 | cut -d'=' -f2 | sed 's/ //g')   
