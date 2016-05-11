@@ -4,7 +4,7 @@
 # source <path of environment file>
 
 # All expected system should be defined in Jenkins slave nodes. Set "host" field to expected hostname.  For example,
-# "hpcc-centos7 21" is "hpccsystems-dev-el7=build21". "hpcc-trusty64" is 
+# "hpcc-centos7 21" is "hpcc-platform-dev-el7=build21". "hpcc-trusty64" is 
 # "hpccsystmes-dev-trusty64-build21".
 # line started with '#' will be skipped
 (cat <<EOF

@@ -8,16 +8,16 @@ script_name=$(basename $0)
 
 declare -A server 
 
-server[hpcc-xenial64]=hpccsystems-dev-xenial64-build
-server[hpcc-wily64]=hpccsystems-dev-wily64-build
-server[hpcc-trusty64]=hpccsystems-dev-trusty64-build
-server[hpcc-trusty32]=hpccsystems-dev-trusty32-build
-server[hpcc-precise64]=hpccsystems-dev-precise64-build
-server[hpcc-precise64cpp11]=hpccsystems-dev-precise64cpp11-build
-server[hpcc-precise32]=hpccsystems-dev-precise32-build
-server[hpcc-centos7]=hpccsystems-dev-el7-build
-server[hpcc-centos6]=hpccsystems-dev-el6-build
-server[hpcc-centos5]=hpccsystems-dev-el5-build
+server[hpcc-xenial64]=hpcc-platform-dev-xenial64-build
+server[hpcc-wily64]=hpcc-platform-dev-wily64-build
+server[hpcc-trusty64]=hpcc-platform-dev-trusty64-build
+server[hpcc-trusty32]=hpcc-platform-dev-trusty32-build
+server[hpcc-precise64]=hpcc-platform-dev-precise64-build
+server[hpcc-precise64cpp11]=hpcc-platform-dev-precise64cpp11-build
+server[hpcc-precise32]=hpcc-platform-dev-precise32-build
+server[hpcc-centos7]=hpcc-platform-dev-el7-build
+server[hpcc-centos6]=hpcc-platform-dev-el6-build
+server[hpcc-centos5]=hpcc-platform-dev-el5-build
 
 
 function usage()
