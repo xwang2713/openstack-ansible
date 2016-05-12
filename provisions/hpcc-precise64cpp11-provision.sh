@@ -193,4 +193,8 @@ update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
 update-alternatives --config gcc
 update-alternatives --config g++
 
+# In chance Java 1.6 is installed
+#------------------------------------
+update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+
 exit 0
