@@ -180,3 +180,7 @@ then
    cd  cmake-3.5.2-Linux-i686
    cp -r * /usr/local/
 fi
+
+# In chance Java 1.6 is installed
+#------------------------------------
+update-alternatives --set java /usr/lib/jvm/java-7-openjdk-i386/jre/bin/java
