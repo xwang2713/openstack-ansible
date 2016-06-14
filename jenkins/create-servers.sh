@@ -64,7 +64,7 @@ done
 
 [ -z "$input_file" ]  && usage
 
-slave_list=${rootDir}/etc/ansible/$slave_list
+slave_list=${root_dir}/etc/ansible/$slave_list
 [ -e $slave_list ] && rm -rf $slave_list
 
 # Create new instances
