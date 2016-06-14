@@ -5,6 +5,7 @@ script_name=$(basename $0)
 
 log=${script_dir}/log/delete.log
 [ -e $log ] && rm -rf $log
+mkdir -p ${script_dir}/log
 
 function usage()
 {
