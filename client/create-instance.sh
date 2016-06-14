@@ -37,7 +37,7 @@ function usage()
    echo "Usage: $script_name <paramters or options> "
    echo ""
    echo "      -f FLAVOR "
-   echo "         m1.small, m1.medium, m1.large. The default is m1.small" 
+   echo "         m1.tiny, m1.small, m1.medium, m1.large. The default is m1.small" 
    echo "      -g INSTANCE_GROUP "
    echo "         For example, hpcc-xenial64, hpcc-centos5" 
    echo "      -i INSTANCE_ID" 
