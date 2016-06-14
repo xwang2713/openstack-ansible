@@ -1,4 +1,5 @@
 #!/bin/bash
+FILE_SERVER=10.240.32.242
 yum install -y gcc-c++ gcc make binutils-devel openldap-devel libicu-devel
 yum install -y libxslt-devel libarchive-devel boost141-devel openssl-devel apr-devel apr-util-devel
 yum install -y hiredis-devel numactl-devel libevent-devel apr1-devel aprutil-devel
@@ -12,16 +13,16 @@ yum install -y python26-devel.x86_64 java-1.6.0-openjdk-devel java-1.7.0-openjdk
 update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
 
 yum install -y R-core-devel
-wget http://1.0.0.17/data3/software/R/Rcpp_0.12.1.tar.gz
+wget http://${FILE_SERVER}/data3/software/R/Rcpp_0.12.1.tar.gz
 R CMD INSTALL Rcpp_0.12.1.tar.gz
-wget http://1.0.0.17/data3/software/R/RInside_0.2.12.tar.gz
+wget http://${FILE_SERVER}/data3/software/R/RInside_0.2.12.tar.gz
 R CMD INSTALL RInside_0.2.12.tar.gz
 rm -rf R*.tar.gz
 
-wget http://1.0.0.17/data3/software/antlr/ANTLR.tar.gz
+wget http://${FILE_SERVER}/data3/software/antlr/ANTLR.tar.gz
 tar -zxvf ANTLR.tar.gz -C /usr/local/
 rm -rf ANTLR.tar.gz
-wget http://1.0.0.17/data3/software/graphviz/graphviz-2.26.3.tar.gz
+wget http://${FILE_SERVER}/data3/software/graphviz/graphviz-2.26.3.tar.gz
 tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
 rm -rf graphviz-2.26.3.tar.gz
 
@@ -29,7 +30,7 @@ mkdir -p /jenkins/workspace
 chown -R centos:centos /jenkins
 
 expected_version=3.5.2
-wget http://1.0.0.17/data3/software/cmake/cmake-${expected_version}-el5-x86_64.tar.gz
+wget http://${FILE_SERVER}/data3/software/cmake/cmake-${expected_version}-el5-x86_64.tar.gz
 tar -zxf cmake-${expected_version}-el5-x86_64.tar.gz
 rm -rf  cmake-${expected_version}-el5-x86_64.tar.gz
 cd  cmake-${expected_version}-Linux-x86_64
@@ -44,7 +45,7 @@ yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
 yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
 yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
-wget http://1.0.0.17/data3/software/bison/bison-2.4.1-src.tar.gz
+wget http://${FILE_SERVER}/data3/software/bison/bison-2.4.1-src.tar.gz
 tar -zxf bison-2.4.1-src.tar.gz
 cd bison-2.4.1-src
 ./configure
@@ -52,7 +53,7 @@ make
 make install
 cd
 
-wget http://1.0.0.17/data3/software/flex/flex-2.5.35.tar.gz
+wget http://${FILE_SERVER}/data3/software/flex/flex-2.5.35.tar.gz
 tar -zxf flex-2.5.35.tar.gz
 cd flex-2.5.35
 ./configure
@@ -60,7 +61,7 @@ make
 make install
 cd
 
-wget http://1.0.0.17/data3/software/tbb/tbb-2.2-2.20090809.el5.x86_64.rpm
-wget http://1.0.0.17/data3/software/tbb/tbb-devel-2.2-2.20090809.el5.x86_64.rpm
+wget http://${FILE_SERVER}/data3/software/tbb/tbb-2.2-2.20090809.el5.x86_64.rpm
+wget http://${FILE_SERVER}/data3/software/tbb/tbb-devel-2.2-2.20090809.el5.x86_64.rpm
 rpm -i tbb-2.2-2.20090809.el5.x86_64.rpm tbb-devel-2.2-2.20090809.el5.x86_64.rpm
 

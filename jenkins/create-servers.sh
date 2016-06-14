@@ -34,7 +34,7 @@ function usage()
    echo "      -i INPUT_FILE "
    echo "         in format: <instance group> <index>" 
    echo "      -o OUTPUT_HOSTS_FILE_NAME"
-   echo "         in format: ansible hosts file under /etc/ansible. The default is jenkins_slaves" 
+   echo "         in format: ansible hosts file under ../etc/ansible. The default is jenkins_slaves" 
    echo ""
    exit
 }
@@ -60,7 +60,7 @@ done
 
 [ -z "$input_file" ]  && usage
 
-slave_list=/etc/ansible/$slave_list
+slave_list=${rootDir}/etc/ansible/$slave_list
 [ -e $slave_list ] && rm -rf $slave_list
 
 # Create new instances

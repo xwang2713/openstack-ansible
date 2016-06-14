@@ -5,6 +5,9 @@ exec >$LOG 2>&1
 set -x
 hostname
 
+FILE_SERVER=10.240.32.242
+[ -n "$1" ] && FILE_SERVER=$1
+
 [ $(id -u) -ne 0 ] && echo "Must run as root" && exit 3
 
 
@@ -55,7 +58,7 @@ fi
 grep file-server /etc/hosts
 if [ $? -ne 0 ] 
 then
-  echo "1.0.0.17	file-server.novalocal" >> /etc/hosts
+  echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
 # Move /usr/local to /mnt/disk1/
@@ -121,27 +124,27 @@ update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
 # Install git package
 #------------------------------
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
 yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
 
 # Install R 
 #-------------------------------
 yum install -y R-core-devel
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/R/Rcpp_0.12.1.tar.gz .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/Rcpp_0.12.1.tar.gz .
 R CMD INSTALL Rcpp_0.12.1.tar.gz
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/R/RInside_0.2.12.tar.gz .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
 R CMD INSTALL RInside_0.2.12.tar.gz
 
 
 # Add ANTLRA and graphviz
 #-----------------------------------------
 cd /Downloads
-scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/antlr/ANTLR.tar.gz .
+scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/antlr/ANTLR.tar.gz .
 tar -zxvf ANTLR.tar.gz -C /usr/local/
-scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/graphviz/graphviz-2.26.3.tar.gz .
+scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/graphviz/graphviz-2.26.3.tar.gz .
 tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
 
 
@@ -151,7 +154,7 @@ maven_name=apache-maven-3.3.9
 cd /usr/local
 if [ ! -d $maven_name ]
 then 
-  scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/apache/${maven_name}-bin.tar.gz .
+  scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/apache/${maven_name}-bin.tar.gz .
   tar -zxvf ${maven_name}-bin.tar.gz
   rm -rf ${maven_name}-bin.tar.gz
   [ -d maven ] && rm -rf maven
@@ -169,11 +172,11 @@ fi
 cd /usr/local
 if [ ! -e hadoop ]
 then
-  scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/hadoop/hadoop-1.2.1.tar.gz /usr/local/
+  scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/hadoop/hadoop-1.2.1.tar.gz /usr/local/
   tar -zxvf hadoop-1.2.1.tar.gz
   rm -rf hadoop-1.2.1.tar.gz
 
-  scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/hadoop/hadoop-2.6.0.tar.gz /usr/local/
+  scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/hadoop/hadoop-2.6.0.tar.gz /usr/local/
   tar -zxvf hadoop-2.6.0.tar.gz
   rm -rf hadoop-2.6.0.tar.gz
   ln -s hadoop-2.6.0 hadoop
@@ -207,7 +210,7 @@ cmake_path=$(which cmake)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/cmake/cmake-${expected_version}-el6-x86_64.tar.gz .
+   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-el6-x86_64.tar.gz .
    tar -zxf cmake-${expected_version}-el6-x86_64.tar.gz
    rm -rf  cmake-${expected_version}-el6-x86_64.tar.gz
    cd  cmake-${expected_version}-Linux-x86_64

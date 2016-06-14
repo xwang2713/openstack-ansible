@@ -1,7 +1,7 @@
 #!/bin/bash
-
+FILE_SERVER=10.240.32.242
 yum install -y python
-wget http://1.0.0.17/data3/software/python/simplejson-2.0.9.tar.gz
+wget http://${FILE_SERVER}/data3/software/python/simplejson-2.0.9.tar.gz
 tar -zxvf simplejson-2.0.9.tar.gz
 cd simplejson-2.0.9
 python setup.py install

@@ -34,12 +34,12 @@ hpcc-precise32 21
 EOF
 ) > /mnt/disk1/work/openstack/jenkins/data/server.list
 
-cd /mnt/disk1/work/openstack/jenkins
-./create-servers.sh -i data/server.list
+cd openstack/jenkins
+./create-servers.sh -i /mnt/disk1/work/openstack/jenkins/data/server.list
 
 sleep 60 # give some time for systems fully up (sshd)
 cd ../provisions
-time ansible-playbook provision_1.yaml --extra-vars "hosts=new" -b -i /etc/ansible/jenkins_slaves
+time ansible-playbook provision_1.yaml --extra-vars "hosts=new" -b -i ../etc/ansible/jenkins_slaves
 
 cd ../jenkins 
-ansible-playbook update-hosts.yaml -b  -i /etc/ansible/jenkins
+ansible-playbook update-hosts.yaml -b  -i ../etc/ansible/jenkins

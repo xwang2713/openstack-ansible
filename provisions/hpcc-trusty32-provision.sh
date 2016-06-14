@@ -5,6 +5,9 @@ exec >$LOG 2>&1
 set -x
 hostname
 
+FILE_SERVER=10.240.32.242
+[ -n "$1" ] && FILE_SERVER=$1
+
 [ $(id -u) -ne 0 ] && echo "Must run as root" && exit 3
 
 if [ ! -e /home/ubuntu/.ssh/id_rsa ] 
@@ -54,7 +57,7 @@ fi
 grep file-server /etc/hosts
 if [ $? -ne 0 ] 
 then
-  echo "1.0.0.17	file-server.novalocal" >> /etc/hosts
+  echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
 # Move /usr/local to /mnt/disk1/
@@ -100,15 +103,15 @@ apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-de
 #-------------------------------
 apt-get install -y r-base r-cran-rcpp
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/R/RInside_0.2.12.tar.gz .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
 R CMD INSTALL RInside_0.2.12.tar.gz
 
 # Add ANTLRA and graphviz
 #-----------------------------------------
 cd /Downloads
-scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/antlr/ANTLR.tar.gz .
+scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/antlr/ANTLR.tar.gz .
 tar -zxvf ANTLR.tar.gz -C /usr/local/
-scp -r -o StrictHostKeyChecking=no root@1.0.0.17:/data3/software/graphviz/graphviz-2.26.3.tar.gz .
+scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/graphviz/graphviz-2.26.3.tar.gz .
 tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
 
 
@@ -140,7 +143,7 @@ cmake_path=$(which cmake)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   wget http://1.0.0.17:/data3/software/cmake/cmake-3.5.2-trusty-i686.tar.gz
+   wget http://${FILE_SERVER}:/data3/software/cmake/cmake-3.5.2-trusty-i686.tar.gz
    tar -zxf cmake-3.5.2-trusty-i686.tar.gz
    rm -rf  cmake-3.5.2-trusty-i686.tar.gz
    cd  cmake-3.5.2-Linux-i686
