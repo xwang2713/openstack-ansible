@@ -8,6 +8,10 @@ root_dir=${script_dir}/..
 log_dir=${script_dir}/log
 data_dir=${script_dir}/data
 
+mkdir -p $log_dir $data_dir
+
+
+
 result=${log_dir}/create_result
 log=${log_dir}/create.log
 tmp_log=${log_dir}/create_$$
