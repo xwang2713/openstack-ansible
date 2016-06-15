@@ -1,6 +1,10 @@
 # For CentOS5 run as ansible-playbook provision_1.yaml --extra-vars "hosts=hpcc-centos5 user=root"  -i <inventary file>
 # For Ubuntu run as ansible-playbook provision_1.yaml --extra-vars "hosts=hpcc-xenial64 user=ubuntu" -b -i <inventory file>
 # For CentOS run as ansible-playbook provision_1.yaml --extra-vars "hosts=hpcc-centos6 user=centos" -b -i <inventory file>
+
+# FILE_SERVERS is deined in etc/ansible/group_vars/new
+# Could be using full path from environment variable
+#       copy: src={{ lookup('env', "OPENSTACK_ANSIBLE_HOME") }}/provisions/{{provision_script}} dest=~/ mode=0777
 ---
 - name: Transfer and execute a script.
   hosts: '{{ hosts }}'
@@ -9,6 +13,6 @@
      - name: Transfer the private key file
        copy: src=/root/.ssh/id_rsa dest=~/.ssh/ mode=0400
      - name: Transfer the script
-       copy: src={{ lookup('env', "OPENSTACK_ANSIBLE_HOME") }}/provisions/{{provision_script}} dest=~/ mode=0777
+       copy: src=provisions/{{provision_script}} dest=~/ mode=0777
      - name: Execute the script
        command: bash ~/{{provision_script}} {{FILE_SERVER}}

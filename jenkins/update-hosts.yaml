@@ -5,8 +5,8 @@
   hosts: jenkins
   tasks:
      - name: Transfer the new server ip file
-       copy: src={{ lookup('env', 'OPENSTACK_ANSIBLE_HOME') }}/jenkins/data/server_ip_list dest=/tmp/ mode=0755
+       copy: src=data/server_ip_list dest=/tmp/ mode=0755
      - name: Transfer the new server ip file
-       copy: src={{ lookup('env', 'OPENSTACK_ANSIBLE_HOME') }}/jenkins/update-hosts.sh dest=/tmp/ mode=0755
+       copy: src=jenkins/update-hosts.sh dest=/tmp/ mode=0755
      - name: Execute the script
        command: bash /tmp/update-hosts.sh
