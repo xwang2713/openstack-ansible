@@ -32,10 +32,10 @@ hpcc-precise64cpp11 21
 #hpcc-precise64cpp11 22
 hpcc-precise32 21
 EOF
-) > /mnt/disk1/work/openstack/jenkins/data/server.list
+) > /tmp/data/server.list
 
 cd openstack/jenkins
-./create-servers.sh -i /mnt/disk1/work/openstack/jenkins/data/server.list
+./create-servers.sh -i /tmp/server.list
 
 sleep 60 # give some time for systems fully up (sshd)
 cd ../provisions

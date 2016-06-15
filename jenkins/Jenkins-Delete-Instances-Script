@@ -2,4 +2,4 @@
 
 cd openstack-ansible/jenkins
 pwd
-./delete-servers.sh -i /mnt/disk1/work/openstack/jenkins/data/server.list
+./delete-servers.sh -i /tmp/server.list
