@@ -203,3 +203,10 @@ then
    cp -r * /usr/local/
 
 fi
+
+# Install Couchbase
+#------------------------------
+wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-x86_64.rpm
+rpm -iv couchbase-release-1.0-2-x86_64.rpm
+yum install -y libcouchbase-devel libcouchbase2-bin
+rm -rf couchbase-release-1.0-2-x86_64.rpm

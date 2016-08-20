@@ -226,3 +226,11 @@ yum install -y devtoolset-2-gcc devtoolset-2-binutils
 yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
 yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
 yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+# Install Couchbase package
+#------------------------------
+wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-x86_64.rpm
+rpm -iv couchbase-release-1.0-2-x86_64.rpm
+yum install -y libcouchbase-devel libcouchbase2-bin
+rm -rf couchbase-release-1.0-2-x86_64.rpm
+
