@@ -243,3 +243,11 @@ then
    wget http://${FILE_SERVER}/data3/software/tbb/tbb-devel-2.2-2.20090809.el5.x86_64.rpm
    rpm -i tbb-2.2-2.20090809.el5.x86_64.rpm tbb-devel-2.2-2.20090809.el5.x86_64.rpm
 fi
+
+# gpg 
+#------------------------------
+su - centos
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit

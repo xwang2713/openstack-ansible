@@ -187,3 +187,12 @@ fi
 # In chance Java 1.6 is installed
 #------------------------------------
 update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
+
+# gpg
+#------------------------------
+su - ubuntu
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit
+

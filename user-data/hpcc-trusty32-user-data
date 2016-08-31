@@ -46,4 +46,11 @@ cd ..
 rm -rf *.tar.gz
 
 
+# gpg
+#------------------------------
+su - ubuntu
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit
 

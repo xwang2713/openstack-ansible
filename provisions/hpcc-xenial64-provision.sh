@@ -192,3 +192,12 @@ sudo dpkg -i couchbase-release-1.0-2-amd64.deb
 sudo apt-get update
 sudo apt-get install -y libcouchbase-dev libcouchbase2-bin build-essential
 rm -rf couchbase-release-1.0-2-amd64.deb
+
+# gpg
+#------------------------------
+su - ubuntu
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit
+

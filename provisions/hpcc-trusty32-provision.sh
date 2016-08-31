@@ -149,3 +149,12 @@ then
    cd  cmake-3.5.2-Linux-i686
    cp -r * /usr/local/
 fi
+
+# gpg
+#------------------------------
+su - ubuntu
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit
+
