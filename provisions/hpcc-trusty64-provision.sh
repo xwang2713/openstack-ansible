@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 LOG=/var/log/provision.log
 exec >$LOG 2>&1
