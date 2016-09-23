@@ -236,8 +236,6 @@ rm -rf couchbase-release-1.0-2-x86_64.rpm
 
 # gpg
 #------------------------------
-su - centos
-wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
-gpg --import HPCCSystems.priv
-#rm -rf HPCCSystems.priv
-exit
+su - centos -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+su - centos -c "gpg --import HPCCSystems.priv"
+su - centos -c "rm -rf HPCCSystems.priv"

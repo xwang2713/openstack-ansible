@@ -10,12 +10,15 @@ declare -A image server
 
 image[hpcc-xenial64]=Ubuntu-16.04-x86_64
 image[hpcc-wily64]=Ubuntu-15.10.x86_64
-image[hpcc-trusty64]=Ubuntu-14.04-x86_64
+#It reports there are two image with the same name
+#image[hpcc-trusty64]=Ubuntu-14.04-x86_64
+image[hpcc-trusty64]=930610c5-6697-4e25-833f-9b80ce57e767
 image[hpcc-trusty32]=Ubuntu-14.04-i386
 image[hpcc-precise64]=Ubuntu-12.04-x86_64
 image[hpcc-precise64cpp11]=Ubuntu-12.04-x86_64
 image[hpcc-precise32]=Ubuntu-12.04-i386
-image[hpcc-centos7]=CentOS-7-x86_64
+#image[hpcc-centos7]=CentOS-7-x86_64
+image[hpcc-centos7]=f08962d7-2394-46bb-a8cc-d1cf7bc3e77d
 image[hpcc-centos6]=CentOS-6-x86_64
 image[hpcc-centos5]=CentOS-5-x86_64
 

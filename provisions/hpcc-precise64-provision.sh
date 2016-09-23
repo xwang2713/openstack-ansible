@@ -190,9 +190,6 @@ update-alternatives --set java /usr/lib/jvm/java-7-openjdk-amd64/jre/bin/java
 
 # gpg
 #------------------------------
-su - ubuntu
-wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
-gpg --import HPCCSystems.priv
-rm -rf HPCCSystems.priv
-exit
-
+su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+su - ubuntu -c "gpg --import HPCCSystems.priv"
+su - ubuntu -c "rm -rf HPCCSystems.priv"

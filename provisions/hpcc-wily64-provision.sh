@@ -185,9 +185,8 @@ fi
 
 # gpg
 #------------------------------
-su - ubuntu
-wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
-gpg --import HPCCSystems.priv
-rm -rf HPCCSystems.priv
+su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+su - ubuntu -c "gpg --import HPCCSystems.priv"
+su - ubuntu -c "rm -rf HPCCSystems.priv"
 exit
 
