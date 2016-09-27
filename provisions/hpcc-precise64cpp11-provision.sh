@@ -217,7 +217,7 @@ su - ubuntu -c "rm -rf HPCCSystems.priv"
 
 # atlas
 #------------------------------
-sudo apt-get install -y libatlas-base-dev
+apt-get install -y libatlas-base-dev
 
 
 exit 0
