@@ -102,8 +102,7 @@ yum install -y libxslt-devel libarchive-devel boost141-devel openssl-devel apr-d
 yum install -y hiredis-devel numactl-devel libevent-devel apr1-devel aprutil-devel 
 yum install -y python26-devel.x86_64 sqlite-devel libmemcached-devel memcached-devel tbb-devel redis
 yum install -y rpm-build git mysql-devel curl-devel
-curl --silent --location https://rpm.nodesource.com/setup | bash -
-yum install -y nodejs
+
 
 yum install -y python26-devel.x86_64 java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
 # Recent Jenkins requires Java 1.7 or later
@@ -249,3 +248,12 @@ fi
 su - centos -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
 su - centos -c "gpg --import HPCCSystems.priv"
 su - centos -c "rm -rf HPCCSystems.priv"
+
+# atlas
+#------------------------------
+yum install -y atlas-devel
+
+# This doesn't work. Take off --silent will see the error similar to this:
+#OpenSSL: error:14077410:SSL routines:SSL23_GET_SERVER_HELLO:sslv3 alert handshake failure
+curl --silent --location https://rpm.nodesource.com/setup | bash -
+yum install -y nodejs

@@ -155,5 +155,10 @@ fi
 su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
 su - ubuntu -c "gpg --import HPCCSystems.priv"
 su - ubuntu -c "rm -rf HPCCSystems.priv"
+
+# atlas
+#------------------------------
+sudo apt-get install -y libatlas-base-dev
+
 exit
 
