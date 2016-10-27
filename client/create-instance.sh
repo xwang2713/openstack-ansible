@@ -98,6 +98,7 @@ instance_index=$(printf "%02d" $instance_index)
 image_name=${image[$instance_group]}
 server_name=${server[$instance_group]}${instance_index}
 volume_name=${server_name}-disk-01
+net_id=4d4118c4-6333-4562-a2e9-a1f7be97f108
 
 if [ -z "$image_name" ] 
 then
@@ -129,6 +130,7 @@ echo "openstack server create \
        --key-name $key    \
        --user-data ${user_data}    \
        --availablility-zone $instance_zone \
+       --nic net-id=$net_id \
        --wait \
        $server_name"
 
@@ -138,6 +140,7 @@ openstack server create \
        --key-name $key    \
        --user-data ${user_data}    \
        --availability-zone $instance_zone \
+       --nic net-id=$net_id \
        --wait \
        $server_name 
 
