@@ -53,10 +53,10 @@ do
          ;;
       i) input_file=$OPTARG
          ;;
-      i) slave_list=$OPTARG
+      o) slave_list=$OPTARG
          ;;
       ?)
-         echo "Unknown option $1"
+         echo "Unknown option $arg"
          usage
          ;;
    esac
