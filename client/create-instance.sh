@@ -183,7 +183,7 @@ fi
 volume_info=$(openstack volume list | grep $volume_name )
 volume_status=unknown
 
-time_to_wait=20
+time_to_wait=60
 while [ $time_to_wait -gt 0 ]
 do
    volume_status=$(echo $volume_info | cut -d'|' -f4 | sed 's/ //g')

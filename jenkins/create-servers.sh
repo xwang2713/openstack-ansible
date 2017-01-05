@@ -87,7 +87,7 @@ do
         # Collect new instance information
         #---------------------------------
         result_string=$(cat $tmp_log | tail -n 2 | head -n 1) 
-        resul_string=$(echo $result_string | cut -d' ' -f 2)
+        result_string=$(echo $result_string | cut -d' ' -f 2)
         instance_name=$(echo $result_string | cut -d',' -f 1 | cut -d'=' -f 2)
         instance_ip=$(echo $result_string | cut -d',' -f 2 | cut -d'=' -f 2)
         echo "$instance_ip	$instance_name" >> $server_ip_list	
