@@ -11,13 +11,7 @@ FILE_SERVER=10.240.32.242
 [ $(id -u) -ne 0 ] && echo "Must run as root" && exit 3
 
 
-if [ ! -e /home/centos/.ssh/id_rsa ] 
-then
-   cp /root/.ssh/id_rsa  /home/centos/.ssh/
-   chown centos:centos /home/centos/.ssh/id_rsa
-fi
-
-
+#[ ! -e ~/.ssh/id_rsa ] && cp /root/.ssh/id_rsa ~/.ssh/
 
 # Mount volume /dev/vdb
 #--------------------------
@@ -27,9 +21,10 @@ then
   echo "/dev/vdb was already mounted"
 else
   echo "Format and mount /dev/vdb"
-  mke2fs -t ext4 /dev/vdb
+  /sbin/fdisk -l
+  /sbin/mkfs.ext3 /dev/vdb
   mkdir -p /mnt/disk1
-  mount -t ext4 /dev/vdb /mnt/disk1
+  mount -t ext3 /dev/vdb /mnt/disk1
 fi
 
 # Add /dev/vdb to fstab
@@ -38,11 +33,10 @@ grep  "[[:space:]]*/dev/vdb" /etc/fstab
 if [ $? -ne 0 ] 
 then
   echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	ext4	defaults	0 0" >> /etc/fstab
+  echo "/dev/vdb	/mnt/disk1	ext3	defaults	0 0" >> /etc/fstab
 fi
 
 df -k
-
 
 # Add hostname to /etc/hosts
 #---------------------------
@@ -100,38 +94,19 @@ then
   ln -s /mnt/disk1/Downloads /Downloads
 fi
 
-
 # Install pre-requisite packages 
 #-------------------------------
 #yum update -y
-yum install -y epel-release wget
-yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel 
-yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
-yum install -y redis numactl-devel mysql-devel libevent-devel
-yum install -y python-devel apr1-devel aprutil-devel 
-yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
-yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
-curl --silent --location https://rpm.nodesource.com/setup | bash -
-yum install -y nodejs
+yum install -y gcc-c++ gcc make binutils-devel openldap-devel libicu-devel 
+yum install -y libxslt-devel libarchive-devel boost141-devel openssl-devel apr-devel apr-util-devel
+yum install -y hiredis-devel numactl-devel libevent-devel apr1-devel aprutil-devel 
+yum install -y python26-devel.x86_64 sqlite-devel libmemcached-devel memcached-devel tbb-devel redis
+yum install -y rpm-build git mysql-devel curl-devel
 
-yum install -y java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
+
+yum install -y python26-devel.x86_64 java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
 # Recent Jenkins requires Java 1.7 or later
-update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
-
-# Install hiredis 
-#-------------------------------
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/linux/centos6/hiredis-last*.rpm .
-rpm -i hiredis-last-0.13.3-1.el6.remi.x86_64.rpm  hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
-
-
-
-# Install git package
-#------------------------------
-cd /Downloads
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
-yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
+update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java  
 
 # Install R 
 #-------------------------------
@@ -141,7 +116,6 @@ scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/Rcpp_0.12.
 R CMD INSTALL Rcpp_0.12.1.tar.gz
 scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
 R CMD INSTALL RInside_0.2.12.tar.gz
-
 
 # Add ANTLRA and graphviz
 #-----------------------------------------
@@ -214,12 +188,11 @@ cmake_path=$(which cmake)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-el6-x86_64.tar.gz .
-   tar -zxf cmake-${expected_version}-el6-x86_64.tar.gz
-   rm -rf  cmake-${expected_version}-el6-x86_64.tar.gz
+   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-el5-x86_64.tar.gz .
+   tar -zxf cmake-${expected_version}-el5-x86_64.tar.gz 
+   rm -rf  cmake-${expected_version}-el5-x86_64.tar.gz 
    cd  cmake-${expected_version}-Linux-x86_64
    cp -r * /usr/local/
-
 fi
 
 
@@ -231,14 +204,46 @@ yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
 yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
 yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
 
-# Install Couchbase package
+# Install bison 2.4.1 
 #------------------------------
-wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-x86_64.rpm
-rpm -iv couchbase-release-1.0-2-x86_64.rpm
-yum install -y libcouchbase-devel libcouchbase2-bin
-rm -rf couchbase-release-1.0-2-x86_64.rpm
+bison_version=$(bison -V | head -n 1 | grep 2.4.1 | cut -d' ' -f4)
+if [ -z "$bison_version" ] || [[ "$bison_version" <  "2.4.1" ]]
+then
+   cd /Downloads/
+   wget http://${FILE_SERVER}/data3/software/bison/bison-2.4.1-src.tar.gz
+   tar -zxf bison-2.4.1-src.tar.gz
+   cd bison-2.4.1-src
+   ./configure
+   make
+   make install
+fi
 
-# gpg
+# Install flex 2.5.35
+#------------------------------
+flex_version=$(flex -V | head -n 1 | cut -d' ' -f 3)
+if [ -z "$flex_version" ] || [ "$flex_version" = "2.5.4" ] # [[ "2.5.4" < "2.5.35" ]] doesn't work. since 3 < 4
+then
+   cd /Downloads/
+   wget http://${FILE_SERVER}/data3/software/flex/flex-2.5.35.tar.gz
+   tar -zxf flex-2.5.35.tar.gz
+   cd flex-2.5.35
+   ./configure
+   make
+   make install
+fi
+
+# Install tbb
+#------------------------------
+rpm -qa | grep tbb-devel
+if [ $? -ne 0 ]
+then
+   cd /Downloads/
+   wget http://${FILE_SERVER}/data3/software/tbb/tbb-2.2-2.20090809.el5.x86_64.rpm
+   wget http://${FILE_SERVER}/data3/software/tbb/tbb-devel-2.2-2.20090809.el5.x86_64.rpm
+   rpm -i tbb-2.2-2.20090809.el5.x86_64.rpm tbb-devel-2.2-2.20090809.el5.x86_64.rpm
+fi
+
+# gpg 
 #------------------------------
 su - centos -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
 su - centos -c "gpg --import HPCCSystems.priv"
@@ -247,3 +252,8 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
+
+# This doesn't work. Take off --silent will see the error similar to this:
+#OpenSSL: error:14077410:SSL routines:SSL23_GET_SERVER_HELLO:sslv3 alert handshake failure
+curl --silent --location https://rpm.nodesource.com/setup | bash -
+yum install -y nodejs
