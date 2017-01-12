@@ -18,6 +18,25 @@ then
 fi
 
 
+grep -q nameserver  /etc/resolv.conf
+if [ $? -ne 0 ]; then
+  cat > /etc/resolv.conf << EOF
+nameserver 10.121.146.70
+nameserver 10.121.146.71
+search openstacklocal
+EOF
+fi
+
+#Disable /sbin/dhclient-script update /etc/resolv.conf
+cat > /etc/dhclient-enter-hooks << EOF
+#!/bin/sh
+make_resolv_conf() {
+echo "doing nothing to resolv.conf"
+}
+EOF
+
+chmod a+x /etc/dhclient-enter-hooks
+
 
 # Mount volume /dev/vdb
 #--------------------------
@@ -82,6 +101,9 @@ then
    fi
    ln -s /mnt/disk1/opt /opt
 fi
+
+
+
 
 # Move /tmp to /mnt/disk1/
 #-------------------------------

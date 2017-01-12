@@ -83,7 +83,25 @@ then
 fi
 [ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
 
-#/etc/resolv.conf
-# search openstacklocal novalocal
-#nameserver 10.121.146.70
-#nameserver 10.121.146.71
+grep -q nameserver  /etc/resolv.conf
+if [ $? -ne 0 ]; then
+  cat > /etc/resolv.conf << EOF
+nameserver 10.121.146.70
+nameserver 10.121.146.71
+search openstacklocal
+EOF
+
+#Disable /sbin/dhclient-script update /etc/resolv.conf
+cat > /etc/dhclient-enter-hooks << EOF
+#!/bin/sh
+make_resolv_conf() {
+echo "doing nothing to resolv.conf"
+}
+EOF
+chmod a+x /etc/dhclient-enter-hooks 
+
+fi
+#/sbin/dhclint-script periodically try to wipe out this file
+#for centos 5/6. Before we figure out the resson try to protect
+#it
+chmod 444 /etc/resolv.conf

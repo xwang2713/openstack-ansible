@@ -21,17 +21,18 @@ image[hpcc-precise32]=Ubuntu-12.04-i386
 image[hpcc-centos7]=f08962d7-2394-46bb-a8cc-d1cf7bc3e77d
 image[hpcc-centos6]=CentOS-6-x86_64
 image[hpcc-centos5]=CentOS-5-x86_64
+image[hpcc-yakkety]=ubuntu-16.10-x86_64-build
 
-server[hpcc-xenial64]=hpcc-platform-dev-xenial64-build
-server[hpcc-wily64]=hpcc-platform-dev-wily64-build
-server[hpcc-trusty64]=hpcc-platform-dev-trusty64-build
-server[hpcc-trusty32]=hpcc-platform-dev-trusty32-build
-server[hpcc-precise64]=hpcc-platform-dev-precise64-build
-server[hpcc-precise64cpp11]=hpcc-platform-dev-precise64cpp11-build
-server[hpcc-precise32]=hpcc-platform-dev-precise32-build
-server[hpcc-centos7]=hpcc-platform-dev-el7-build
-server[hpcc-centos6]=hpcc-platform-dev-el6-build
-server[hpcc-centos5]=hpcc-platform-dev-el5-build
+server[hpcc-xenial64]=hpcc-platform-dev-xenial64-
+server[hpcc-wily64]=hpcc-platform-dev-wily64-
+server[hpcc-trusty64]=hpcc-platform-dev-trusty64-
+server[hpcc-trusty32]=hpcc-platform-dev-trusty32-
+server[hpcc-precise64]=hpcc-platform-dev-precise64-
+server[hpcc-precise64cpp11]=hpcc-platform-dev-precise64cpp11-
+server[hpcc-precise32]=hpcc-platform-dev-precise32-
+server[hpcc-centos7]=hpcc-platform-dev-el7-
+server[hpcc-centos6]=hpcc-platform-dev-el6-
+server[hpcc-centos5]=hpcc-platform-dev-el5-
 
 
 function usage()
@@ -49,6 +50,8 @@ function usage()
    echo "         ssh key name. The default is hpcc_key_pair." 
    echo "      -s VOLUME_SIZE" 
    echo "         volume size in GB. The default is 100." 
+   echo "      -t instance type. The default is build. It will the part of "
+   echo "         server name to identify the instance purpose"
    echo "      -u USER_DATA" 
    echo "         User data file relative to ${bin_dir}/../user-data/.  " 
    echo "         The default is <INSTANCE_GROUP>."
@@ -57,9 +60,10 @@ function usage()
    exit
 }
 
+instance_type=build
 instance_group=
 instance_index=
-flavor=m1.small 
+flavor=m1.medium 
 key=hpcc_key_pair
 instance_zone=redundancy-group-2
 volume_zone=nova
@@ -81,6 +85,8 @@ do
          ;;
       s) volume_size=$OPTARG
          ;;
+      t) instance_type=$OPTARG
+         ;;
       u) user_data=$OPTARG
          ;;
       V) create_volume=no
@@ -96,7 +102,7 @@ done
 
 instance_index=$(printf "%02d" $instance_index)
 image_name=${image[$instance_group]}
-server_name=${server[$instance_group]}${instance_index}
+server_name=${server[$instance_group]}${instance_type}${instance_index}
 volume_name=${server_name}-disk-01
 net_id=4d4118c4-6333-4562-a2e9-a1f7be97f108
 

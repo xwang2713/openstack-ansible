@@ -8,16 +8,16 @@ script_name=$(basename $0)
 
 declare -A server 
 
-server[hpcc-xenial64]=hpcc-platform-dev-xenial64-build
-server[hpcc-wily64]=hpcc-platform-dev-wily64-build
-server[hpcc-trusty64]=hpcc-platform-dev-trusty64-build
-server[hpcc-trusty32]=hpcc-platform-dev-trusty32-build
-server[hpcc-precise64]=hpcc-platform-dev-precise64-build
-server[hpcc-precise64cpp11]=hpcc-platform-dev-precise64cpp11-build
-server[hpcc-precise32]=hpcc-platform-dev-precise32-build
-server[hpcc-centos7]=hpcc-platform-dev-el7-build
-server[hpcc-centos6]=hpcc-platform-dev-el6-build
-server[hpcc-centos5]=hpcc-platform-dev-el5-build
+server[hpcc-xenial64]=hpcc-platform-dev-xenial64-
+server[hpcc-wily64]=hpcc-platform-dev-wily64-
+server[hpcc-trusty64]=hpcc-platform-dev-trusty64-
+server[hpcc-trusty32]=hpcc-platform-dev-trusty32-
+server[hpcc-precise64]=hpcc-platform-dev-precise64-
+server[hpcc-precise64cpp11]=hpcc-platform-dev-precise64cpp11-
+server[hpcc-precise32]=hpcc-platform-dev-precise32-
+server[hpcc-centos7]=hpcc-platform-dev-el7-
+server[hpcc-centos6]=hpcc-platform-dev-el6-
+server[hpcc-centos5]=hpcc-platform-dev-el5-
 
 
 function usage()
@@ -35,6 +35,7 @@ function usage()
    exit
 }
 
+instance_type=build
 instance_group=
 instance_index=
 delete_volume=yes
@@ -47,6 +48,8 @@ do
       g) instance_group=$OPTARG
          ;;
       i) instance_index=$OPTARG
+         ;;
+      t) instance_type=$OPTARG
          ;;
       V) delete_volume=no
          ;;
@@ -66,7 +69,7 @@ then
    usage
 fi
 instance_index=$(printf "%02d" $instance_index)
-server_name=${server[$instance_group]}${instance_index}
+server_name=${server[$instance_group]}${instance_type}${instance_index}
 volume_name=${server_name}-disk-01
 
 echo "instance name: ${server_name}"
