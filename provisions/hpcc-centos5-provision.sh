@@ -95,10 +95,20 @@ EOF
 cat > /etc/dhclient-enter-hooks << EOF
 #!/bin/sh
 make_resolv_conf() {
-echo "doing nothing to resolv.conf"
+   :
 }
 EOF
 chmod a+x /etc/dhclient-enter-hooks 
+
+# Two more protections
+for f in  /etc/resolv.conf /etc/sysconfig/network-scripts/ifcfg-eth0
+do
+  grep -q PEERDNS  $f
+  if [ $? -ne 0 ]; then
+    echo "PEERDNS=no" >> $f
+  fi
+done
+
 
 fi
 #/sbin/dhclint-script periodically try to wipe out this file

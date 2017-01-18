@@ -18,6 +18,7 @@ server[hpcc-precise32]=hpcc-platform-dev-precise32-
 server[hpcc-centos7]=hpcc-platform-dev-el7-
 server[hpcc-centos6]=hpcc-platform-dev-el6-
 server[hpcc-centos5]=hpcc-platform-dev-el5-
+server[hpcc-yakkety64]=hpcc-platform-dev-yakkety64-
 
 
 function usage()

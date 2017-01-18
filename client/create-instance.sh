@@ -21,7 +21,7 @@ image[hpcc-precise32]=Ubuntu-12.04-i386
 image[hpcc-centos7]=f08962d7-2394-46bb-a8cc-d1cf7bc3e77d
 image[hpcc-centos6]=CentOS-6-x86_64
 image[hpcc-centos5]=CentOS-5-x86_64
-image[hpcc-yakkety]=ubuntu-16.10-x86_64-build
+image[hpcc-yakkety64]=ubuntu-16.10-x86_64-build
 
 server[hpcc-xenial64]=hpcc-platform-dev-xenial64-
 server[hpcc-wily64]=hpcc-platform-dev-wily64-
@@ -33,6 +33,7 @@ server[hpcc-precise32]=hpcc-platform-dev-precise32-
 server[hpcc-centos7]=hpcc-platform-dev-el7-
 server[hpcc-centos6]=hpcc-platform-dev-el6-
 server[hpcc-centos5]=hpcc-platform-dev-el5-
+server[hpcc-yakkety64]=hpcc-platform-dev-yakkety64-
 
 
 function usage()
