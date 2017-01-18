@@ -102,6 +102,11 @@ done
 [ -z "$instance_group" ] || [ -z "$instance_index" ] && usage
 
 instance_index=$(printf "%02d" $instance_index)
+if [ -z "${image[$instance_group]+abc}" ]
+then
+   echo "Unknown group name: $instance_group"
+   exit 1
+fi
 image_name=${image[$instance_group]}
 server_name=${server[$instance_group]}${instance_type}${instance_index}
 volume_name=${server_name}-disk-01
@@ -109,7 +114,7 @@ net_id=4d4118c4-6333-4562-a2e9-a1f7be97f108
 
 if [ -z "$image_name" ] 
 then
-   echo "Unknown group name: $instance_group"
+   echo "Image name for group $instance_group doesn't exist."
    exit 1
 fi
 
