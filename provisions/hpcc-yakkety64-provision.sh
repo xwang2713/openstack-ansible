@@ -57,4 +57,4 @@ fi
 
 [ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
 
-exit
+exit 0

@@ -204,5 +204,5 @@ su - ubuntu -c "rm -rf HPCCSystems.priv"
 apt-get install -y libatlas-base-dev
 
 
-exit
+exit 0
 
