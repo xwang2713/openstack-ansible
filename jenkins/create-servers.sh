@@ -96,7 +96,7 @@ do
         fi
         result_string=$(echo $result_string | cut -d' ' -f 2)
         instance_ip=$(echo $result_string | cut -d',' -f 2 | cut -d'=' -f 2)
-        instance_name=$(cat $tmp_log | grep "^\|[[:space:]][[:space:]]*name[[:space:]][[:space:]]*\|" | \
+        instance_name=$(cat $tmp_log | grep "^|[[:space:]][[:space:]]*name[[:space:]][[:space:]]*|" | \
                         sed 's/ //g' | cut -d'|' -f3)
         echo "$instance_ip	$instance_name" >> $server_ip_list	
         if [ ${IPS[$group]} ]
