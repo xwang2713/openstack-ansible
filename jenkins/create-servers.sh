@@ -81,7 +81,7 @@ do
     #echo ""
     echo "Launch $group $index" | tee -a $log 
     echo "-----------------------"  | tee -a $log
-    ${script_dir}/../client/create-instance.sh -g $group -i $index "$options"  |& tee  $tmp_log 
+    ${script_dir}/../client/create-instance.sh -g $group -i $index $options  |& tee  $tmp_log 
     if [ $? -eq 0 ]
     then  
         # Collect new instance information
