@@ -22,7 +22,7 @@ df -k
 
 # Add hostname to /etc/hosts
 #---------------------------
-host_ip=$(ifconfig | grep "[[:space:]]*inet addr:1.0" | cut -d':' -f2 | cut -d' ' -f1)
+host_ip=$(ifconfig | grep "[[:space:]]*inet 1.0" | sed 's/  */ /g' | cut -d' ' -f3)
 host_name=$(hostname -s)
 grep $host_name /etc/hosts
 if [ $? -ne 0 ] 

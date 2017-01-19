@@ -1,2 +1,2 @@
-provision_script: hpcc-xenial64-provision.sh
+provision_script: hpcc-yakkety64-provision.sh
 user: ubuntu
