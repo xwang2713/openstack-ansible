@@ -86,7 +86,14 @@ do
     then  
         # Collect new instance information
         #---------------------------------
-        result_string=$(cat $tmp_log | tail -n 2 | head -n 1) 
+        result_string=$(cat $tmp_log | tail -n 2 | grep -i "succeed") 
+        
+        if [ -z "result_string" ]
+        then
+           error=$(expr $error \+ 1) 
+           cat $tmp_log >> $log
+           continue
+        fi
         result_string=$(echo $result_string | cut -d' ' -f 2)
         instance_name=$(echo $result_string | cut -d',' -f 1 | cut -d'=' -f 2)
         instance_ip=$(echo $result_string | cut -d',' -f 2 | cut -d'=' -f 2)
