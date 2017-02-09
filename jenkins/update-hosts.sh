@@ -1,4 +1,8 @@
 #!/bin/bash
+TIMESTAMP=$(date "+%Y-%m-%d_%H-%M-%S")
+#backup
+cp /etc/hosts  /etc/hosts-${TIMESTAMP}
+
 cmd="cat /etc/hosts  "
 while read ip hostname
 do
