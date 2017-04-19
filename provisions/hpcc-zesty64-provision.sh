@@ -96,7 +96,7 @@ apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libl
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
 apt-get install -y python2.7-dev libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
-apt-get install -y libsqlite3-dev libmemcached-dev  
+apt-get install -y libsqlite3-dev libmemcached-dev cmake 
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 
 # Install R 
@@ -169,35 +169,20 @@ fi
 #   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
 #fi
 
-# Install cmake
-#------------------------------
-expected_version=3.5.2
-cmake_path=$(which cmake)
-[ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
-if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
-then
-   cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-xenial-amd64.tar.gz .
-   tar -zxf cmake-${expected_version}-xenial-amd64.tar.gz 
-   rm -rf  cmake-${expected_version}-xenial-amd64.tar.gz 
-   cd  cmake-${expected_version}-Linux-x86_64
-   cp -r * /usr/local/
-   
-fi
 
 # Install Couchbase
 #------------------------------
-wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb
-sudo dpkg -i couchbase-release-1.0-2-amd64.deb
-sudo apt-get update
-sudo apt-get install -y libcouchbase-dev libcouchbase2-bin build-essential
-rm -rf couchbase-release-1.0-2-amd64.deb
+#wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb
+#sudo dpkg -i couchbase-release-1.0-2-amd64.deb
+#sudo apt-get update
+#sudo apt-get install -y libcouchbase-dev libcouchbase2-bin build-essential
+#rm -rf couchbase-release-1.0-2-amd64.deb
 
 # gpg
 #------------------------------
-su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
-su - ubuntu -c "gpg --import HPCCSystems.priv"
-su - ubuntu -c "rm -rf HPCCSystems.priv"
+#su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+#su - ubuntu -c "gpg --import HPCCSystems.priv"
+#su - ubuntu -c "rm -rf HPCCSystems.priv"
 
 # atlas
 #------------------------------
