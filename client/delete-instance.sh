@@ -8,6 +8,7 @@ script_name=$(basename $0)
 
 declare -A server 
 
+server[hpcc-zesty64]=hpcc-platform-dev-zesty64-
 server[hpcc-xenial64]=hpcc-platform-dev-xenial64-
 server[hpcc-wily64]=hpcc-platform-dev-wily64-
 server[hpcc-trusty64]=hpcc-platform-dev-trusty64-

@@ -8,6 +8,7 @@ script_name=$(basename $0)
 
 declare -A image server
 
+image[hpcc-zesty64]=Ubuntu-17.04-x86_64
 image[hpcc-xenial64]=Ubuntu-16.04-x86_64
 image[hpcc-wily64]=Ubuntu-15.10.x86_64
 #It reports there are two image with the same name
@@ -34,6 +35,7 @@ server[hpcc-centos7]=hpcc-platform-dev-el7-
 server[hpcc-centos6]=hpcc-platform-dev-el6-
 server[hpcc-centos5]=hpcc-platform-dev-el5-
 server[hpcc-yakkety64]=hpcc-platform-dev-yakkety64-
+server[hpcc-zesty64]=hpcc-platform-dev-zesty64-
 
 
 function usage()
@@ -71,7 +73,7 @@ volume_zone=nova
 volume_size=100
 create_volume=yes
 
-while getopts "*hf:g:i:k:s:u:V" arg
+while getopts "*hf:g:i:k:m:s:u:V" arg
 do
    case $arg in
       h) usage
@@ -84,6 +86,9 @@ do
          ;;
       k) key=$OPTARG
          ;;
+      m) image_name=$OPTARG
+         ;;
+      s) volume_size=$OPTARG
       s) volume_size=$OPTARG
          ;;
       t) instance_type=$OPTARG
@@ -107,7 +112,8 @@ then
    echo "Unknown group name: $instance_group"
    exit 1
 fi
-image_name=${image[$instance_group]}
+
+[ -z "$image_name" ] && $image_name=${image[$instance_group]}
 server_name=${server[$instance_group]}${instance_type}${instance_index}
 volume_name=${server_name}-disk-01
 net_id=4d4118c4-6333-4562-a2e9-a1f7be97f108

@@ -1,0 +1,59 @@
+#!/bin/bash
+
+FILE_SERVER=10.240.32.242
+#Install pre-requisite packages
+#-------------------------------
+apt-get update
+apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev
+curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+apt-get install -y nodejs
+apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
+apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
+apt-get install -y python2.7-dev libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
+apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
+apt-get install -y libsqlite3-dev libmemcached-dev libfreetype6-dev pkg-config fop zip
+apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
+
+# Install R
+#-------------------------------
+apt-get install -y r-base r-cran-rcpp
+wget http://${FILE_SERVER}/data3/software/R/RInside_0.2.12.tar.gz
+R CMD INSTALL RInside_0.2.12.tar.gz
+
+# Add ANTLRA and graphviz
+#-----------------------------------------
+wget http://${FILE_SERVER}/data3/software/antlr/ANTLR.tar.gz
+tar -zxvf ANTLR.tar.gz -C /usr/local/
+rm -rf ANTLR.tar.gz
+wget http://${FILE_SERVER}/data3/software/graphviz/graphviz-2.26.3.tar.gz .
+tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
+rm -rf graphviz-2.26.3.tar.gz
+
+
+# Install cmake
+#------------------------------
+wget http://${FILE_SERVER}/data3/software/cmake/cmake-3.5.2-xenial-amd64.tar.gz
+tar -zxf cmake-3.5.2-xenial-amd64.tar.gz
+rm -rf  cmake-3.5.2-xenial-amd64.tar.gz
+cd  cmake-3.5.2-Linux-x86_64
+cp -r * /usr/local/
+
+mkdir -p /jenkins/workspace
+chown -R ubuntu:ubuntu /jenkins
+
+# Install Couchbase
+#------------------------------
+wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb
+sudo dpkg -i couchbase-release-1.0-2-amd64.deb
+sudo apt-get update
+sudo apt-get install -y libcouchbase-dev libcouchbase2-bin build-essential
+rm -rf couchbase-release-1.0-2-amd64.deb
+
+# gpg
+#------------------------------
+su - ubuntu
+wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv
+gpg --import HPCCSystems.priv
+rm -rf HPCCSystems.priv
+exit
+
