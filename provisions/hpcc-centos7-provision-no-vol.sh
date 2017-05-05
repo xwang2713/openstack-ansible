@@ -10,34 +10,12 @@ FILE_SERVER=10.240.32.242
 
 [ $(id -u) -ne 0 ] && echo "Must run as root" && exit 3
 
+[ ! -e /root/.ssh/id_rsa ] && echo "Missing  /root/.ssh/id_rsa"  && exit 3
 
 if [ ! -e /home/centos/.ssh/id_rsa ] 
 then 
   cp /root/.ssh/id_rsa /home/centos/.ssh/
   chown centos:centos /home/centos/.ssh/id_rsa
-fi
-
-
-# Mount volume /dev/vdb
-#--------------------------
-mount | grep "/dev/vdb"
-if [ $? -eq 0 ]
-then
-  echo "/dev/vdb was already mounted"
-else
-  echo "Format and mount /dev/vdb"
-  mkfs.xfs -f /dev/vdb
-  mkdir -p /mnt/disk1
-  mount -t xfs /dev/vdb /mnt/disk1
-fi
-
-# Add /dev/vdb to fstab
-#--------------------------
-grep  "[[:space:]]*/dev/vdb" /etc/fstab
-if [ $? -ne 0 ] 
-then
-  echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	xfs	defaults	0 0" >> /etc/fstab
 fi
 
 df -k
@@ -58,45 +36,6 @@ grep file-server /etc/hosts
 if [ $? -ne 0 ] 
 then
   echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
-fi
-
-# Move /usr/local to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/usr/local ]
-then
-  mkdir -p /mnt/disk1/usr
-  mv /usr/local /mnt/disk1/usr/
-  ln -s /mnt/disk1/usr/local /usr/local
-fi
-
-# Move /opt to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/opt ]
-then
-   if [ -d /opt ]
-   then
-      mv /opt /mnt/disk1/
-   else
-      mkdir -p /mnt/disk1/opt
-   fi
-   ln -s /mnt/disk1/opt /opt
-fi
-
-# Move /tmp to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/tmp ]
-then
-  mv /tmp /mnt/disk1/
-  ln -s /mnt/disk1/tmp /tmp
-fi
-
-# Some utility directories
-#-------------------------------
-if [ ! -d /mnt/disk1/Downloads ]
-then
-  mkdir -p /mnt/disk1/Downloads
-  chmod -R 777 /mnt/disk1/Downloads
-  ln -s /mnt/disk1/Downloads /Downloads
 fi
 
 # Install pre-requisite packages 
@@ -170,26 +109,10 @@ fi
 
 # Configure Jenkins slaves
 #-------------------------------
-cd /mnt/disk1
-if [ ! -d jenkins ]
-then
-  mkdir -p jenkins/workspace
-  chown -R centos:centos jenkins
-fi
-[ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
+mkdir -p /var/lib/jenkins/workspace
+chown -R centos:centos /var/lib/jenkins
+[ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
 
-# Install Ruby, Puppet agent
-#-------------------------------
-yum install -y ruby puppet
-cd /etc/puppet
-grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
-if [ $? -ne 0 ]
-then
-   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
-fi
-
-# Install cmake
-#------------------------------
 expected_version=3.5.2
 cmake_path=$(which cmake)
 [ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
@@ -220,19 +143,4 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
-
-# python3
-#------------------------------
-python_name="Python-3.6.1"
-python_package="${python_name}.tar.xz"
-wget http://${FILE_SERVER}/data3/software/python/${python_package} .
-tar -xJvf ${python_package}
-cd ${python_name}
-./configure 
-#yum install -y lcov
-make
-make install
-cd ..
-rm -rf ${python_name}*
-
 

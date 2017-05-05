@@ -281,3 +281,17 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
+
+# python3
+#------------------------------
+python_name="Python-3.6.1"
+python_package="${python_name}.tar.xz"
+wget http://${FILE_SERVER}/data3/software/python/${python_package} .
+tar -xJvf ${python_package}
+cd ${python_name}
+./configure
+#yum install -y lcov
+make
+make install
+cd ..
+rm -rf ${python_name}*
