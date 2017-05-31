@@ -12,36 +12,41 @@ FILE_SERVER=10.240.32.242
 
 
 if [ ! -e /home/centos/.ssh/id_rsa ] 
-then 
-  cp /root/.ssh/id_rsa /home/centos/.ssh/
-  chown centos:centos /home/centos/.ssh/id_rsa
-fi
-
-
-# Mount volume /dev/vdb
-#--------------------------
-mount | grep "/dev/vdb"
-if [ $? -eq 0 ]
 then
-  echo "/dev/vdb was already mounted"
-else
-  echo "Format and mount /dev/vdb"
-  mkfs.xfs -f /dev/vdb
-  mkdir -p /mnt/disk1
-  mount -t xfs /dev/vdb /mnt/disk1
+   cp /root/.ssh/id_rsa  /home/centos/.ssh/
+   chown centos:centos /home/centos/.ssh/id_rsa
 fi
 
-# Add /dev/vdb to fstab
-#--------------------------
-grep  "[[:space:]]*/dev/vdb" /etc/fstab
-if [ $? -ne 0 ] 
-then
-  echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	xfs	defaults	0 0" >> /etc/fstab
+
+grep -q nameserver  /etc/resolv.conf
+if [ $? -ne 0 ]; then
+  cat > /etc/resolv.conf << EOF
+nameserver 10.121.146.70
+nameserver 10.121.146.71
+search openstacklocal
+EOF
 fi
+
+#Disable /sbin/dhclient-script update /etc/resolv.conf
+cat > /etc/dhclient-enter-hooks << EOF
+#!/bin/sh
+make_resolv_conf() {
+   :
+}
+EOF
+
+chmod a+x /etc/dhclient-enter-hooks
+
+# Two more protections
+for f in  /etc/resolv.conf /etc/sysconfig/network-scripts/ifcfg-eth0
+do
+  grep -q PEERDNS  $f
+  if [ $? -ne 0 ]; then
+    echo "PEERDNS=no" >> $f
+  fi
+done
 
 df -k
-
 
 # Add hostname to /etc/hosts
 #---------------------------
@@ -60,44 +65,14 @@ then
   echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
-# Move /usr/local to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/usr/local ]
-then
-  mkdir -p /mnt/disk1/usr
-  mv /usr/local /mnt/disk1/usr/
-  ln -s /mnt/disk1/usr/local /usr/local
-fi
-
-# Move /opt to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/opt ]
-then
-   if [ -d /opt ]
-   then
-      mv /opt /mnt/disk1/
-   else
-      mkdir -p /mnt/disk1/opt
-   fi
-   ln -s /mnt/disk1/opt /opt
-fi
-
-# Move /tmp to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/tmp ]
-then
-  mv /tmp /mnt/disk1/
-  ln -s /mnt/disk1/tmp /tmp
-fi
-
 # Some utility directories
 #-------------------------------
-if [ ! -d /mnt/disk1/Downloads ]
+if [ ! -d /Downloads ]
 then
-  mkdir -p /mnt/disk1/Downloads
-  chmod -R 777 /mnt/disk1/Downloads
-  ln -s /mnt/disk1/Downloads /Downloads
+  mkdir -p /Downloads
+  chmod -R 777 /Downloads
 fi
+
 
 # Install pre-requisite packages 
 #-------------------------------
@@ -105,13 +80,31 @@ fi
 yum install -y epel-release wget
 yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel 
 yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
-yum install -y hiredis-devel numactl-devel libevent-devel
-yum install -y python-devel python34-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel 
-yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel v8-devel
-yum install -y git rpm-build curl-devel gtk2-devel freetype-devel
+yum install -y redis numactl-devel mysql-devel libevent-devel
+yum install -y python-devel python34-devel apr1-devel aprutil-devel 
+yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
+yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup | bash -
 yum install -y nodejs
-yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm
+
+yum install -y java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
+# Recent Jenkins requires Java 1.7 or later
+update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+
+# Install hiredis 
+#-------------------------------
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/linux/centos6/hiredis-last*.rpm .
+rpm -i hiredis-last-0.13.3-1.el6.remi.x86_64.rpm  hiredis-last-devel-0.13.3-1.el6.remi.x86_64.rpm
+
+
+
+# Install git package
+#------------------------------
+cd /Downloads
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
+yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
 
 # Install R 
 #-------------------------------
@@ -147,11 +140,9 @@ then
   if [ $? -ne 0 ]
   then
      echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
-     echo "export PATH=\${MAVEN_HOME}/bin:\${PATH}" >> /etc/profile
+     echo "export PATH=\${MAVEN_HOME}/bin:\$PATH" >> /etc/profile
   fi
 fi
-
-echo $PATH
 
 # Add hadoop
 #-------------------------------
@@ -170,41 +161,50 @@ fi
 
 # Configure Jenkins slaves
 #-------------------------------
-cd /mnt/disk1
+cd /var/lib
 if [ ! -d jenkins ]
 then
   mkdir -p jenkins/workspace
   chown -R centos:centos jenkins
 fi
-[ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
+[ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
 
 # Install Ruby, Puppet agent
 #-------------------------------
-yum install -y ruby puppet
-cd /etc/puppet
-grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
-if [ $? -ne 0 ]
-then
-   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
-fi
+#yum install -y ruby puppet
+#cd /etc/puppet
+#grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
+#if [ $? -ne 0 ]
+#then
+#   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
+#fi
 
 # Install cmake
 #------------------------------
 expected_version=3.5.2
 cmake_path=$(which cmake)
 [ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
-if [ -z "$cmake_path" ] || [[ "$cmake_version" < "$expected_version" ]]
+if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-el7-x86_64.tar.gz .
-   tar -zxf cmake-${expected_version}-el7-x86_64.tar.gz
-   rm -rf  cmake-${expected_version}-el7-x86_64.tar.gz
+   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-el6-x86_64.tar.gz .
+   tar -zxf cmake-${expected_version}-el6-x86_64.tar.gz
+   rm -rf  cmake-${expected_version}-el6-x86_64.tar.gz
    cd  cmake-${expected_version}-Linux-x86_64
    cp -r * /usr/local/
 
 fi
 
-# Install Couchbase
+
+# Install C++11 package
+#------------------------------
+wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+yum install -y devtoolset-2-gcc devtoolset-2-binutils
+yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+# Install Couchbase package
 #------------------------------
 wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-x86_64.rpm
 rpm -iv couchbase-release-1.0-2-x86_64.rpm

@@ -18,29 +18,6 @@ fi
 
 #apt-get install -y python2.7
 
-
-# Mount volume /dev/vdb
-#--------------------------
-mount | grep "/dev/vdb"
-if [ $? -eq 0 ]
-then
-  echo "/dev/vdb was already mounted"
-else
-  echo "Format and mount /dev/vdb"
-  mke2fs -t ext4 /dev/vdb
-  mkdir -p /mnt/disk1
-  mount -t ext4 /dev/vdb /mnt/disk1
-fi
-
-# Add /dev/vdb to fstab
-#--------------------------
-grep  "[[:space:]]*/dev/vdb" /etc/fstab
-if [ $? -ne 0 ] 
-then
-  echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	ext4	defaults	0 0" >> /etc/fstab
-fi
-
 df -k
 
 # Add hostname to /etc/hosts
@@ -60,30 +37,12 @@ then
   echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
-# Move /usr/local to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/usr/local ]
-then
-  mkdir -p /mnt/disk1/usr
-  mv /usr/local /mnt/disk1/usr/
-  ln -s /mnt/disk1/usr/local /usr/local
-fi
-
-# Move /tmp to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/tmp ]
-then
-  mv /tmp /mnt/disk1/
-  ln -s /mnt/disk1/tmp /tmp
-fi
-
 # Some utility directories
 #-------------------------------
-if [ ! -d /mnt/disk1/Downloads ]
+if [ ! -d /Downloads ]
 then
-  mkdir -p /mnt/disk1/Downloads
-  chmod -R 777 /mnt/disk1/Downloads
-  ln -s /mnt/disk1/Downloads /Downloads
+  mkdir -p /Downloads
+  chmod -R 777 /Downloads
 fi
 
 # Install pre-requisite packages 
@@ -117,23 +76,23 @@ tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
 
 # Configure Jenkins slaves
 #-------------------------------
-cd /mnt/disk1
+cd /var/lib
 if [ ! -d jenkins ]
 then
   mkdir -p jenkins/workspace
   chown -R ubuntu:ubuntu jenkins
 fi
-[ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
+[ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
 
-# Install Ruby, Puppet agent
-#-------------------------------
-apt-get install -y ruby puppet
-cd /etc/puppet
-grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
-if [ $? -ne 0 ]
-then
-   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
-fi
+## Install Ruby, Puppet agent
+##-------------------------------
+#apt-get install -y ruby puppet
+#cd /etc/puppet
+#grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
+#if [ $? -ne 0 ]
+#then
+#   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
+#fi
 
 # Install cmake
 #------------------------------
@@ -159,6 +118,7 @@ su - ubuntu -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 apt-get install -y libatlas-base-dev
+
 
 exit
 

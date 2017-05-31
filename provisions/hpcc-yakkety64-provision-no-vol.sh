@@ -16,7 +16,7 @@ then
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 fi
 
-apt-get install -y python2.7 python2.7-dev python3-dev
+apt-get install -y python2.7-dev python3-dev
 
 df -k
 

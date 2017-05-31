@@ -142,7 +142,7 @@ yum install -y epel-release wget
 yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel 
 yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
 yum install -y redis numactl-devel mysql-devel libevent-devel
-yum install -y python-devel apr1-devel aprutil-devel 
+yum install -y python-devel python34-devel apr1-devel aprutil-devel 
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
 yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup | bash -
@@ -281,17 +281,3 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
-
-# python3
-#------------------------------
-python_name="Python-3.6.1"
-python_package="${python_name}.tar.xz"
-wget http://${FILE_SERVER}/data3/software/python/${python_package} .
-tar -xJvf ${python_package}
-cd ${python_name}
-./configure
-#yum install -y lcov
-make
-make install
-cd ..
-rm -rf ${python_name}*

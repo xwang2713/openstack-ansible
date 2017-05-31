@@ -45,7 +45,7 @@ yum install -y epel-release wget
 yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel 
 yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
 yum install -y hiredis-devel numactl-devel libevent-devel
-yum install -y python-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel 
+yum install -y python-devel python34-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel 
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel v8-devel
 yum install -y git rpm-build curl-devel gtk2-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup | bash -
@@ -143,4 +143,3 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
-

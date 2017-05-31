@@ -16,30 +16,7 @@ then
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 fi
 
-#apt-get install -y python2.7
-
-
-# Mount volume /dev/vdb
-#--------------------------
-mount | grep "/dev/vdb"
-if [ $? -eq 0 ]
-then
-  echo "/dev/vdb was already mounted"
-else
-  echo "Format and mount /dev/vdb"
-  mke2fs -t ext4 /dev/vdb
-  mkdir -p /mnt/disk1
-  mount -t ext4 /dev/vdb /mnt/disk1
-fi
-
-# Add /dev/vdb to fstab
-#--------------------------
-grep  "[[:space:]]*/dev/vdb" /etc/fstab
-if [ $? -ne 0 ] 
-then
-  echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	ext4	defaults	0 0" >> /etc/fstab
-fi
+apt-get install -y python2.7
 
 df -k
 
@@ -60,31 +37,14 @@ then
   echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
-# Move /usr/local to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/usr/local ]
-then
-  mkdir -p /mnt/disk1/usr
-  mv /usr/local /mnt/disk1/usr/
-  ln -s /mnt/disk1/usr/local /usr/local
-fi
-
-# Move /tmp to /mnt/disk1/
-#-------------------------------
-if [ ! -d /mnt/disk1/tmp ]
-then
-  mv /tmp /mnt/disk1/
-  ln -s /mnt/disk1/tmp /tmp
-fi
-
 # Some utility directories
 #-------------------------------
-if [ ! -d /mnt/disk1/Downloads ]
+if [ ! -d /Downloads ]
 then
-  mkdir -p /mnt/disk1/Downloads
-  chmod -R 777 /mnt/disk1/Downloads
-  ln -s /mnt/disk1/Downloads /Downloads
+  mkdir -p /Downloads
+  chmod -R 777 /Downloads
 fi
+
 
 # Install pre-requisite packages 
 #-------------------------------
@@ -94,9 +54,9 @@ curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
 apt-get install -y nodejs
 apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
-apt-get install -y python-dev python3-dev libv8-dev openjdk-6-jdk openjdk-7-jdk libapr1-dev libaprutil1-dev libiberty-dev
+apt-get install -y python2.7-dev python3-dev libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
-apt-get install -y libsqlite3-dev libmemcached-dev xsltproc libsaxonb-java
+apt-get install -y libsqlite3-dev libmemcached-dev  
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 
 # Install R 
@@ -113,6 +73,7 @@ scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/antlr/ANT
 tar -zxvf ANTLR.tar.gz -C /usr/local/
 scp -r -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/graphviz/graphviz-2.26.3.tar.gz .
 tar -zxvf graphviz-2.26.3.tar.gz -C /usr/local/src/
+
 
 # Add Maven
 #-----------------------------------------
@@ -150,16 +111,13 @@ fi
 
 # Configure Jenkins slaves
 #-------------------------------
-cd /mnt/disk1
+cd /var/lib
 if [ ! -d jenkins ]
 then
   mkdir -p jenkins/workspace
-  #cd jenkins
-  #scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/jenkins/*.jar .
-  #cd ..
   chown -R ubuntu:ubuntu jenkins
 fi
-[ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
+[ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
 
 # Install Ruby, Puppet agent
 #-------------------------------
@@ -179,11 +137,12 @@ cmake_path=$(which cmake)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   wget http://${FILE_SERVER}:/data3/software/cmake/cmake-3.5.2-trusty-amd64.tar.gz
-   tar -zxf cmake-3.5.2-trusty-amd64.tar.gz
-   rm -rf  cmake-3.5.2-trusty-amd64.tar.gz
-   cd  cmake-3.5.2-Linux-x86_64
+   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-xenial-amd64.tar.gz .
+   tar -zxf cmake-${expected_version}-xenial-amd64.tar.gz 
+   rm -rf  cmake-${expected_version}-xenial-amd64.tar.gz 
+   cd  cmake-${expected_version}-Linux-x86_64
    cp -r * /usr/local/
+   
 fi
 
 # Install Couchbase
@@ -203,4 +162,7 @@ su - ubuntu -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 apt-get install -y libatlas-base-dev
+
+
+exit 0
 
