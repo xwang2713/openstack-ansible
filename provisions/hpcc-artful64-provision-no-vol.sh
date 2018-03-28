@@ -48,7 +48,7 @@ chmod -R 777 /Downloads
 #-------------------------------
 apt-get update
 apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev libfreetype6-dev fop zip
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev

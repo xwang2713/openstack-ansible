@@ -48,8 +48,9 @@ yum install -y hiredis-devel numactl-devel libevent-devel
 yum install -y python-devel python34-devel java-1.7.0-openjdk-devel apr1-devel aprutil-devel 
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel v8-devel
 yum install -y git rpm-build curl-devel gtk2-devel freetype-devel
-curl --silent --location https://rpm.nodesource.com/setup | bash -
+curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
 yum install -y nodejs
+#if still install old nodejs run "yum clean all" first. Also remove other nodesource under /etc/yum.repos.d/ then run curl for setup_8.x
 yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm
 
 # Install R 

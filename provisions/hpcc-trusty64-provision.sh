@@ -90,7 +90,7 @@ fi
 #-------------------------------
 apt-get update
 apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev libfreetype6-dev fop zip
-curl -sL https://deb.nodesource.com/setup_4.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
@@ -98,6 +98,7 @@ apt-get install -y python-dev python3-dev libv8-dev openjdk-6-jdk openjdk-7-jdk 
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
 apt-get install -y libsqlite3-dev libmemcached-dev xsltproc libsaxonb-java
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
+apt-get install -y libtool autotools-dev automake m4
 
 # Install R 
 #-------------------------------

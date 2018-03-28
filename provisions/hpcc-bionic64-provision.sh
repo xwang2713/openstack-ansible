@@ -16,7 +16,30 @@ then
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 fi
 
-apt-get install -y python2.7
+apt-get install -y python2.7-dev
+apt-get install -y python3-dev
+
+# Mount volume /dev/vdb
+#--------------------------
+mount | grep "/dev/vdb"
+if [ $? -eq 0 ]
+then
+  echo "/dev/vdb was already mounted"
+else
+  echo "Format and mount /dev/vdb"
+  mke2fs -t ext4 /dev/vdb
+  mkdir -p /mnt/disk1
+  mount -t ext4 /dev/vdb /mnt/disk1
+fi
+
+# Add /dev/vdb to fstab
+#--------------------------
+grep  "[[:space:]]*/dev/vdb" /etc/fstab
+if [ $? -ne 0 ] 
+then
+  echo "add /dev/vdb to /etc/fstab"
+  echo "/dev/vdb	/mnt/disk1	ext4	defaults	0 0" >> /etc/fstab
+fi
 
 df -k
 
@@ -37,12 +60,30 @@ then
   echo "${FILE_SERVER}	file-server.novalocal" >> /etc/hosts
 fi
 
+# Move /usr/local to /mnt/disk1/
+#-------------------------------
+if [ ! -d /mnt/disk1/usr/local ]
+then
+  mkdir -p /mnt/disk1/usr
+  mv /usr/local /mnt/disk1/usr/
+  ln -s /mnt/disk1/usr/local /usr/local
+fi
+
+# Move /tmp to /mnt/disk1/
+#-------------------------------
+if [ ! -d /mnt/disk1/tmp ]
+then
+  mv /tmp /mnt/disk1/
+  ln -s /mnt/disk1/tmp /tmp
+fi
+
 # Some utility directories
 #-------------------------------
-if [ ! -d /Downloads ]
+if [ ! -d /mnt/disk1/Downloads ]
 then
-  mkdir -p /Downloads
-  chmod -R 777 /Downloads
+  mkdir -p /mnt/disk1/Downloads
+  chmod -R 777 /mnt/disk1/Downloads
+  ln -s /mnt/disk1/Downloads /Downloads
 fi
 
 
@@ -54,9 +95,9 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
-apt-get install -y python2.7-dev python3-dev libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
+apt-get install -y libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
-apt-get install -y libsqlite3-dev libmemcached-dev  
+apt-get install -y libsqlite3-dev libmemcached-dev cmake 
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 apt-get install -y libtool autotools-dev automake m4
 
@@ -64,8 +105,8 @@ apt-get install -y libtool autotools-dev automake m4
 #-------------------------------
 apt-get install -y r-base r-cran-rcpp
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
-R CMD INSTALL RInside_0.2.12.tar.gz
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.14.tar.gz .
+R CMD INSTALL RInside_0.2.14.tar.gz
 
 # Add ANTLRA and graphviz
 #-----------------------------------------
@@ -112,39 +153,13 @@ fi
 
 # Configure Jenkins slaves
 #-------------------------------
-cd /var/lib
+cd /mnt/disk1
 if [ ! -d jenkins ]
 then
   mkdir -p jenkins/workspace
   chown -R ubuntu:ubuntu jenkins
 fi
-[ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
-
-# Install Ruby, Puppet agent
-#-------------------------------
-apt-get install -y ruby puppet
-cd /etc/puppet
-grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
-if [ $? -ne 0 ]
-then
-   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
-fi
-
-# Install cmake
-#------------------------------
-expected_version=3.5.2
-cmake_path=$(which cmake)
-[ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
-if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
-then
-   cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-xenial-amd64.tar.gz .
-   tar -zxf cmake-${expected_version}-xenial-amd64.tar.gz 
-   rm -rf  cmake-${expected_version}-xenial-amd64.tar.gz 
-   cd  cmake-${expected_version}-Linux-x86_64
-   cp -r * /usr/local/
-   
-fi
+[ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
 
 # Install Couchbase
 #------------------------------
@@ -156,9 +171,9 @@ rm -rf couchbase-release-1.0-2-amd64.deb
 
 # gpg
 #------------------------------
-su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
-su - ubuntu -c "gpg --import HPCCSystems.priv"
-su - ubuntu -c "rm -rf HPCCSystems.priv"
+#su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+#su - ubuntu -c "gpg --import HPCCSystems.priv"
+#su - ubuntu -c "rm -rf HPCCSystems.priv"
 
 # atlas
 #------------------------------

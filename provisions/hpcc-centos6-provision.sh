@@ -145,7 +145,7 @@ yum install -y redis numactl-devel mysql-devel libevent-devel
 yum install -y python-devel python34-devel apr1-devel aprutil-devel 
 yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel
 yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
-curl --silent --location https://rpm.nodesource.com/setup | bash -
+curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
 yum install -y nodejs
 
 yum install -y java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
