@@ -57,8 +57,8 @@ yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el
 #-------------------------------
 yum install -y R-core-devel
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/Rcpp_0.12.1.tar.gz .
-R CMD INSTALL Rcpp_0.12.1.tar.gz
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/Rcpp_0.12.19.tar.gz .
+R CMD INSTALL Rcpp_0.12.19.tar.gz
 scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
 R CMD INSTALL RInside_0.2.12.tar.gz
 
