@@ -54,7 +54,7 @@ apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libl
 apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
 apt-get install -y libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
 apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
-apt-get install -y libsqlite3-dev libmemcached-dev cmake 
+apt-get install -y libsqlite3-dev libmemcached-dev
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 apt-get install -y libtool autotools-dev automake m4
 
@@ -111,6 +111,25 @@ fi
 mkdir -p /var/lib/jenkins/workspace
 chown -R ubuntu:ubuntu /var/lib/jenkins
 [ ! -e /jenkins ] &&  ln -s /var/lib/jenkins /jenkins
+
+# Install cmake
+#------------------------------
+expected_version=3.13.1
+codename=bionic
+cmake_path=$(which cmake)
+[ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
+if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
+then
+   cd /Downloads
+   wget http://${FILE_SERVER}:/data3/software/cmake/${expected_version}/cmake-${expected_version}-${codename}-i686.tar.gz
+   tar -zxf cmake-${expected_version}-${codename}-i686.tar.gz
+   rm -rf  cmake-${expected_version}*.tar.gz
+   cd  cmake-${expected_version}-${codename}-i686
+   cp -r bin /usr/local/
+   cp -r doc /usr/local/
+   cp -r share /usr/local/
+   cp -r man/* /usr/local/man/
+fi
 
 #------------------------------
 #wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-i386.deb

@@ -97,16 +97,16 @@ fi
 
 # Install cmake
 #------------------------------
-expected_version=3.5.2
+expected_version=3.13.1
 cmake_path=$(which cmake)
 [ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   wget http://${FILE_SERVER}:/data3/software/cmake/cmake-3.5.2-trusty-i686.tar.gz
-   tar -zxf cmake-3.5.2-trusty-i686.tar.gz
-   rm -rf  cmake-3.5.2-trusty-i686.tar.gz
-   cd  cmake-3.5.2-Linux-i686
+   wget http://${FILE_SERVER}:/data3/software/cmake/${expected_version}/cmake-${expected_version}-trusty-i686.tar.gz
+   tar -zxf cmake-${expected_version}-trusty-i686.tar.gz
+   rm -rf  cmake-${expected_version}-trusty-i686.tar.gz
+   cd  cmake-${expected_version}-trusty-i686
    cp -r * /usr/local/
 fi
 

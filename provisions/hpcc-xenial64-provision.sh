@@ -172,22 +172,23 @@ fi
 
 # Install cmake
 #------------------------------
-expected_version=3.11.0
+expected_version=3.13.1
+codename=xenial
 cmake_path=$(which cmake)
 [ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
 if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
 then
    cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/cmake-${expected_version}-Linux-x86_64.tar.gz .
-   tar -zxf cmake-${expected_version}-Linux-x86_64.tar.gz 
-   rm -rf  cmake-${expected_version}-Linux-x86_64.tar.gz 
-   cd  cmake-${expected_version}-Linux-x86_64
+   wget http://${FILE_SERVER}:/data3/software/cmake/${expected_version}/cmake-${expected_version}-${codename}-amd64.tar.gz
+   tar -zxf cmake-${expected_version}-${codename}-amd64.tar.gz
+   rm -rf  cmake-${expected_version}*.tar.gz
+   cd  cmake-${expected_version}-${codename}-amd64
    cp -r bin /usr/local/
    cp -r doc /usr/local/
    cp -r share /usr/local/
    cp -r man/* /usr/local/man/
-   
 fi
+
 
 # Install Couchbase
 #------------------------------
