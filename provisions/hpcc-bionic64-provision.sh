@@ -62,12 +62,19 @@ fi
 
 # Move /usr/local to /mnt/disk1/
 #-------------------------------
-if [ ! -d /mnt/disk1/usr/local ]
-then
-  mkdir -p /mnt/disk1/usr
-  mv /usr/local /mnt/disk1/usr/
-  ln -s /mnt/disk1/usr/local /usr/local
-fi
+#if [ ! -d /mnt/disk1/usr/local ]
+#then
+#  mkdir -p /mnt/disk1/usr
+#  mv /usr/local /mnt/disk1/usr/
+#  ln -s /mnt/disk1/usr/local /usr/local
+#fi
+
+# Move /opt to /mnt/disk1/
+#-------------------------------
+#if [ ! -d /mnt/disk1/opt ]
+#then
+#  ln -s /mnt/disk1/opt /opt
+#fi
 
 # Move /tmp to /mnt/disk1/
 #-------------------------------
@@ -100,6 +107,7 @@ apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent
 apt-get install -y libsqlite3-dev libmemcached-dev 
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 apt-get install -y libtool autotools-dev automake m4
+apt-get install -y libsaxonb-java xsltproc
 
 # Install R 
 #-------------------------------

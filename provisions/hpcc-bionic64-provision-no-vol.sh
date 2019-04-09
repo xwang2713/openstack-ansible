@@ -57,6 +57,7 @@ apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent
 apt-get install -y libsqlite3-dev libmemcached-dev 
 apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
 apt-get install -y libtool autotools-dev automake m4
+apt-get install -y xsltproc libsaxonb-java
 
 # Install R 
 #-------------------------------
