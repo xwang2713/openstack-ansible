@@ -10,13 +10,14 @@ FILE_SERVER=10.240.32.242
 
 [ $(id -u) -ne 0 ] && echo "Must run as root" && exit 3
 
-
-if [ ! -e /home/centos/.ssh/id_rsa ] 
-then 
-  cp /root/.ssh/id_rsa /home/centos/.ssh/
-  chown centos:centos /home/centos/.ssh/id_rsa
+if [ ! -e /home/ubuntu/.ssh/id_rsa ] 
+then
+    cp /root/.ssh/id_rsa /home/ubuntu/.ssh/
+    chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 fi
 
+apt-get install -y python2-dev
+apt-get install -y python3-dev
 
 # Mount volume /dev/vdb
 #--------------------------
@@ -26,9 +27,9 @@ then
   echo "/dev/vdb was already mounted"
 else
   echo "Format and mount /dev/vdb"
-  mkfs.xfs -f /dev/vdb
+  mke2fs -t ext4 /dev/vdb
   mkdir -p /mnt/disk1
-  mount -t xfs /dev/vdb /mnt/disk1
+  mount -t ext4 /dev/vdb /mnt/disk1
 fi
 
 # Add /dev/vdb to fstab
@@ -37,11 +38,10 @@ grep  "[[:space:]]*/dev/vdb" /etc/fstab
 if [ $? -ne 0 ] 
 then
   echo "add /dev/vdb to /etc/fstab"
-  echo "/dev/vdb	/mnt/disk1	xfs	defaults	0 0" >> /etc/fstab
+  echo "/dev/vdb	/mnt/disk1	ext4	defaults	0 0" >> /etc/fstab
 fi
 
 df -k
-
 
 # Add hostname to /etc/hosts
 #---------------------------
@@ -73,13 +73,7 @@ fi
 #-------------------------------
 if [ ! -d /mnt/disk1/opt ]
 then
-   if [ -d /opt ]
-   then
-      mv /opt /mnt/disk1/
-   else
-      mkdir -p /mnt/disk1/opt
-   fi
-   ln -s /mnt/disk1/opt /opt
+  ln -s /mnt/disk1/opt /opt
 fi
 
 # Move /tmp to /mnt/disk1/
@@ -99,43 +93,28 @@ then
   ln -s /mnt/disk1/Downloads /Downloads
 fi
 
+
 # Install pre-requisite packages 
 #-------------------------------
-#yum update -y
-
-#git
-yum install -y perl-ExtUtils-MakeMaker.noarch
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git-2.9.5.tar.xz .
-tar -xf git-2.9.5.tar.xz
-cd git-2.9.5
-./config
-make -j4
-make install
-cd ..
-rm -rf git-2.9.5*
-
-
-yum install -y epel-release wget
-yum install -y gcc-c++ gcc make bison flex binutils-devel openldap-devel libicu-devel 
-yum install -y libxslt-devel libarchive-devel boost-devel openssl-devel apr-devel apr-util-devel
-yum install -y hiredis-devel numactl-devel libevent-devel
-yum install -y python-devel python34-devel java-1.8.0-openjdk-devel apr1-devel aprutil-devel 
-yum install -y sqlite-devel libmemcached-devel memcached-devel tbb-devel v8-devel
-yum install -y rpm-build curl-devel gtk2-devel freetype-devel libtool
-curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
-yum install -y nodejs
-#if still install old nodejs run "yum clean all" first. Also remove other nodesource under /etc/yum.repos.d/
-yum install -y http://10.240.32.242/data3/software/mysql/MySQL-devel-5.6.21-1.el7.x86_64.rpm
+apt-get update
+apt-get install -y libgtk2.0-dev curl libcurl4-gnutls-dev libfreetype6-dev fop zip etcd
+curl -sL https://deb.nodesource.com/setup_11.x | sudo -E bash -
+apt-get install -y nodejs
+apt-get install -y npm
+apt-get install -y g++ gcc make bison git flex build-essential binutils-dev libldap2-dev libcppunit-dev libicu-dev
+apt-get install -y libxslt1-dev zlib1g-dev libboost-regex-dev libssl-dev libarchive-dev
+apt-get install -y libv8-dev default-jdk libapr1-dev libaprutil1-dev libiberty-dev
+apt-get install -y libhiredis-dev libtbb-dev libxalan-c-dev libnuma-dev libevent-dev
+apt-get install -y libsqlite3-dev libmemcached-dev 
+apt-get install -y libboost-thread-dev libboost-filesystem-dev libmysqlclient-dev
+apt-get install -y libtool autotools-dev automake m4 cmake
 
 # Install R 
 #-------------------------------
-yum install -y R-core-devel
+apt-get install -y r-base r-cran-rcpp
 cd /Downloads
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/Rcpp_0.12.19.tar.gz .
-R CMD INSTALL Rcpp_0.12.19.tar.gz
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.12.tar.gz .
-R CMD INSTALL RInside_0.2.12.tar.gz
-
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/R/RInside_0.2.14.tar.gz .
+R CMD INSTALL RInside_0.2.14.tar.gz
 
 # Add ANTLRA and graphviz
 #-----------------------------------------
@@ -161,11 +140,9 @@ then
   if [ $? -ne 0 ]
   then
      echo "export MAVEN_HOME=/usr/local/maven" >> /etc/profile
-     echo "export PATH=\${MAVEN_HOME}/bin:\${PATH}" >> /etc/profile
+     echo "export PATH=\${MAVEN_HOME}/bin:\$PATH" >> /etc/profile
   fi
 fi
-
-echo $PATH
 
 # Add hadoop
 #-------------------------------
@@ -188,50 +165,48 @@ cd /mnt/disk1
 if [ ! -d jenkins ]
 then
   mkdir -p jenkins/workspace
-  chown -R centos:centos jenkins
+  chown -R ubuntu:ubuntu jenkins
 fi
 [ ! -e /jenkins ] &&  ln -s /mnt/disk1/jenkins /jenkins
 
-# Install Ruby, Puppet agent
-#-------------------------------
-yum install -y ruby puppet
-cd /etc/puppet
-grep "^[[:space:]]*server[[:space:]]*=[[:space:]]file-server"  puppet.conf
-if [ $? -ne 0 ]
-then
-   sed -i '/^[[:space:]]*postrun_command/a server=file-server.novalocal' puppet.conf
-fi
-
 # Install cmake
 #------------------------------
-expected_version=3.13.1
-codename=el7
-cmake_path=$(which cmake)
-[ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
-if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
-then
-   cd /Downloads
-   scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/cmake/${expected_version}/cmake-${expected_version}-${codename}-x86_64.tar.gz .
-   tar -zxf cmake-${expected_version}-${codename}-x86_64.tar.gz
-   rm -rf  cmake-${expected_version}-${codename}-x86_64.tar.gz
-   cd  cmake-${expected_version}-${codename}-x86_64
-   cp -r * /usr/local/
+#expected_version=3.13.1
+#codename=disco
+#cmake_path=$(which cmake)
+#[ -n "$cmake_path" ] && cmake_version=$(cmake -version | head -n 1 | cut -d' ' -f3)
+#if [ -z "$cmake_path" ] || [[ "$cmake_version" != "$expected_version" ]]
+#then
+#   cd /Downloads
+#   wget http://${FILE_SERVER}:/data3/software/cmake/${expected_version}/cmake-${expected_version}-${codename}-amd64.tar.gz
+#   tar -zxf cmake-${expected_version}-${codename}-amd64.tar.gz
+#   rm -rf  cmake-${expected_version}*.tar.gz
+#   cd  cmake-${expected_version}-${codename}-amd64
+#   cp -r bin /usr/local/
+#   cp -r doc /usr/local/
+#   cp -r share /usr/local/
+#   cp -r man/* /usr/local/man/
+#fi
 
-fi
 
 # Install Couchbase
 #------------------------------
-wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-x86_64.rpm
-rpm -iv couchbase-release-1.0-2-x86_64.rpm
-yum install -y libcouchbase-devel libcouchbase2-bin
-rm -rf couchbase-release-1.0-2-x86_64.rpm
+wget http://packages.couchbase.com/releases/couchbase-release/couchbase-release-1.0-2-amd64.deb
+sudo dpkg -i couchbase-release-1.0-2-amd64.deb
+sudo apt-get update
+sudo apt-get install -y libcouchbase-dev libcouchbase2-bin build-essential
+rm -rf couchbase-release-1.0-2-amd64.deb
 
 # gpg
 #------------------------------
-su - centos -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
-su - centos -c "gpg --import HPCCSystems.priv"
-su - centos -c "rm -rf HPCCSystems.priv"
+su - ubuntu -c "wget http://${FILE_SERVER}/data3/build/gpg/HPCCSystems.priv"
+#su - ubuntu -c "gpg --import HPCCSystems.priv"
+#su - ubuntu -c "rm -rf HPCCSystems.priv"
 
 # atlas
 #------------------------------
-yum install -y atlas-devel
+apt-get install -y libatlas-base-dev
+
+
+exit 0
+

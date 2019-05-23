@@ -16,6 +16,7 @@ then
     chown ubuntu:ubuntu /home/ubuntu/.ssh/id_rsa
 fi
 
+apt-get update
 apt-get install -y python2.7-dev
 apt-get install -y python3-dev
 

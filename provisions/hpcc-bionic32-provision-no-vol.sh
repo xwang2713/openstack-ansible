@@ -20,6 +20,7 @@ fi
 
 df -k
 
+apt-get update
 apt-get install -y python2.7-dev
 apt-get install -y python3-dev
 

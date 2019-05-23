@@ -148,9 +148,9 @@ yum install -y rpm-build curl-devel gtk2-devel v8-devel freetype-devel
 curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -
 yum install -y nodejs
 
-yum install -y java-1.6.0-openjdk-devel java-1.7.0-openjdk-devel
-# Recent Jenkins requires Java 1.7 or later
-update-alternatives --set java /usr/lib/jvm/jre-1.7.0-openjdk.x86_64/bin/java
+yum install -y java-1.8.0-openjdk-devel
+# Recent Jenkins requires Java 1.8 or later
+update-alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java
 
 # Install hiredis 
 #-------------------------------
@@ -161,11 +161,22 @@ rpm -i hiredis-last-0.13.3-1.el6.remi.x86_64.rpm  hiredis-last-devel-0.13.3-1.el
 
 # Install git package
 #------------------------------
-cd /Downloads
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
-yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
+#git
+yum install -y perl-ExtUtils-MakeMaker.x86_64 gettext
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git-2.9.5.tar.xz .
+tar -xf git-2.9.5.tar.xz
+cd git-2.9.5
+./config
+make -j4
+make install
+cd ..
+rm -rf git-2.9.5*
+
+#cd /Downloads
+#scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+#scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm .
+#scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/perl-YAML-0.70-4.el6.noarch.rpm .
+#yum install -y git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-Git-1.7.12.4-1.el6.rfx.x86_64.rpm perl-YAML-0.70-4.el6.noarch.rpm
 
 # Install R 
 #-------------------------------
