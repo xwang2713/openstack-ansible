@@ -105,10 +105,10 @@ fi
 
 #git
 yum install -y perl-ExtUtils-MakeMaker.noarch
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git-2.9.5.tar.xz .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-2.9.5.tar.xz .
 tar -xf git-2.9.5.tar.xz
 cd git-2.9.5
-./config
+./configure
 make -j4
 make install
 cd ..

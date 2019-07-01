@@ -103,10 +103,10 @@ rpm -i hiredis-last-0.13.3-1.el6.remi.x86_64.rpm  hiredis-last-devel-0.13.3-1.el
 #------------------------------
 #git
 yum install -y perl-ExtUtils-MakeMaker.x86_64 gettext
-scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git-2.9.5.tar.xz .
+scp -o StrictHostKeyChecking=no root@${FILE_SERVER}:/data3/software/git/git-2.9.5.tar.xz .
 tar -xf git-2.9.5.tar.xz
 cd git-2.9.5
-./config
+./configure
 make -j4
 make install
 cd ..
