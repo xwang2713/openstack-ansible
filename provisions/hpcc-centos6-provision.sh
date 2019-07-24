@@ -271,11 +271,19 @@ fi
 
 # Install C++11 package
 #------------------------------
-wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
-yum install -y devtoolset-2-gcc devtoolset-2-binutils
-yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
-yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
-yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+#wget http://people.centos.org/tru/devtools-2/devtools-2.repo -O /etc/yum.repos.d/devtools-2.repo
+#yum install -y devtoolset-2-gcc devtoolset-2-binutils
+#yum install -y devtoolset-2-gcc-gfortran devtoolset-2-gcc-c++
+#yum install -y devtoolset-2-libatomic-devel devtoolset-2-gdb devtoolset-2-git devtoolset-2-gitk
+#yum install -y  devtoolset-2-valgrind devtoolset-2-elfutils devtoolset-2-strace devtoolset-2-git-gui
+
+#devtoolset-7
+#------------------------------
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+
+# To enable in current session:
+# scl enable devtoolset-7 bash
 
 # Install Couchbase package
 #------------------------------
@@ -293,3 +301,5 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
+
+

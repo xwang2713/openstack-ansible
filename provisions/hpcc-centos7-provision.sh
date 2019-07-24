@@ -235,3 +235,13 @@ su - centos -c "rm -rf HPCCSystems.priv"
 # atlas
 #------------------------------
 yum install -y atlas-devel
+
+
+#devtoolset-7
+#------------------------------
+sudo yum install -y centos-release-scl
+sudo yum install -y devtoolset-7
+
+# To enable in current session:
+# scl enable devtoolset-7 bash
+
