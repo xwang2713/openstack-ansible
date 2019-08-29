@@ -153,5 +153,14 @@ fi
 #------------------------------
 apt-get install -y libatlas-base-dev
 
+# Install Sybase
+#------------------------------
+wget http://${FILE_SERVER}/data3/software/Sybase/sybase_install.tar.gz
+tar -zxvf sybase_install.tar.gz
+cd sybase_install
+./install.sh
+cd ..
+rm -rf sybase*
+
 
 exit 0

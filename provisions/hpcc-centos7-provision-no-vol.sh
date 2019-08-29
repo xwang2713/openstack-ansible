@@ -168,3 +168,12 @@ sudo yum install -y devtoolset-7
 # To enable in current session:
 # scl enable devtoolset-7 bash
 
+# Install Sybase
+#------------------------------
+wget http://${FILE_SERVER}/data3/software/Sybase/sybase_install.tar.gz
+tar -zxvf sybase_install.tar.gz
+cd sybase_install
+./install.sh
+cd ..
+rm -rf sybase*
+

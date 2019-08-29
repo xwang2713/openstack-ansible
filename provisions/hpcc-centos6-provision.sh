@@ -302,4 +302,12 @@ su - centos -c "rm -rf HPCCSystems.priv"
 #------------------------------
 yum install -y atlas-devel
 
+# Install Sybase
+#------------------------------
+wget http://${FILE_SERVER}/data3/software/Sybase/sybase_install.tar.gz
+tar -zxvf sybase_install.tar.gz
+cd sybase_install
+./install.sh
+cd ..
+rm -rf sybase*
 
